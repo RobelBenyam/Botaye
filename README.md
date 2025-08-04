@@ -1,6 +1,10 @@
-# Property Management System
+# Botaye - Property Management System
 
 A modern, responsive property management application built with React, TypeScript, and Tailwind CSS.
+
+## About Botaye
+
+Botaye is a comprehensive property management platform designed to streamline real estate operations with modern technology and intuitive user experience.
 
 ## Features
 

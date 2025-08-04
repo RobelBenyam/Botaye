@@ -31,7 +31,7 @@ function App() {
                 Welcome Back, Sarah
               </h1>
               <p className="text-xl text-gray-600 font-medium">
-                Here's what's happening with your properties today
+                Here's what's happening with your Botaye properties today
               </p>
             </div>
             

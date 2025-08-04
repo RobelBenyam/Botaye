@@ -7,9 +7,9 @@ export const SettingsPanel: React.FC = () => {
     profile: {
       firstName: 'Sarah',
       lastName: 'Johnson',
-      email: 'sarah.johnson@propertypo.com',
+      email: 'sarah.johnson@botaye.com',
       phone: '+1 (555) 123-4567',
-      role: 'Property Manager',
+      role: 'Botaye Manager',
       timezone: 'America/New_York'
     },
     notifications: {
@@ -104,7 +104,7 @@ export const SettingsPanel: React.FC = () => {
               onChange={(e) => updateSetting('profile', 'role', e.target.value)}
               className="select-field"
             >
-              <option value="Property Manager">Property Manager</option>
+              <option value="Botaye Manager">Botaye Manager</option>
               <option value="Administrator">Administrator</option>
               <option value="Assistant">Assistant</option>
             </select>
