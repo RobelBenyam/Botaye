@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Search, FileText, Calendar, AlertTriangle, CheckCircle, Clock, Filter, User, MapPin } from 'lucide-react';
 import { Tenant } from '../../types';
-import { mockTenants, mockProperties } from '../../data/mockData';
+import { mockProperties } from '../../data/mockData';
 
 interface LeaseListProps {
   tenants: Tenant[];

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Bell, Shield, Palette, Database, Mail, Smartphone, Globe, Save, Key } from 'lucide-react';
+import { User, Bell, Shield, Palette, Database, Mail, Smartphone, Save, Key } from 'lucide-react';
 
 export const SettingsPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Search, DollarSign, Calendar, CheckCircle, AlertCircle, Clock, Filter } from 'lucide-react';
 import { Payment } from '../../types';
-import { mockPayments, mockTenants, mockProperties } from '../../data/mockData';
+import { mockTenants, mockProperties } from '../../data/mockData';
 
 interface PaymentListProps {
   payments: Payment[];

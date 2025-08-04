@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BarChart3, TrendingUp, DollarSign, Download, Calendar, Filter, PieChart, Activity } from 'lucide-react';
+import { BarChart3, TrendingUp, DollarSign, Download, Filter, PieChart, Activity } from 'lucide-react';
 
 export const ReportsDashboard: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
-  const [selectedReport, setSelectedReport] = useState('overview');
+
 
   const financialData = {
     totalRevenue: 156500,
@@ -146,7 +146,7 @@ export const ReportsDashboard: React.FC = () => {
           </div>
           
           <div className="space-y-4">
-            {monthlyData.map((data, index) => (
+            {monthlyData.map((data) => (
               <div key={data.month} className="flex items-center space-x-4">
                 <div className="w-12 text-sm font-medium text-gray-600">{data.month}</div>
                 <div className="flex-1 flex items-center space-x-2">
