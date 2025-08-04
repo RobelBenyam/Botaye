@@ -1,4 +1,4 @@
-# Botaye - Property Management System
+# Botaye - Property Management System 🏠
 
 A modern, responsive property management application built with React, TypeScript, and Tailwind CSS.
 
