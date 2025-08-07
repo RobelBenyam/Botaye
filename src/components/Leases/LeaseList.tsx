@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Search, FileText, Calendar, AlertTriangle, CheckCircle, Clock, Filter, User, MapPin } from 'lucide-react';
+import { Plus, Search, FileText, Calendar, AlertTriangle, CheckCircle, Clock, Filter, User, MapPin, Eye } from 'lucide-react';
 import { Tenant } from '../../types';
 import { mockProperties } from '../../data/mockData';
+import { LeaseAgreement } from './LeaseAgreement';
 
 interface LeaseListProps {
   tenants: Tenant[];
@@ -10,6 +11,12 @@ interface LeaseListProps {
 export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'pending' | 'expired' | 'expiring-soon'>('all');
+  const [selectedLease, setSelectedLease] = useState<{
+    tenant: Tenant;
+    property: any;
+    leaseStart: Date;
+    leaseEnd: Date;
+  } | null>(null);
 
   const getLeaseStatus = (tenant: Tenant) => {
     const now = new Date();
@@ -260,7 +267,7 @@ export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
                       </div>
                       
                       <div className="text-gray-900 font-semibold">
-                        ${tenant.rentAmount.toLocaleString()}/month
+                        KSh {tenant.rentAmount.toLocaleString()}/month
                       </div>
                     </div>
                     
@@ -283,7 +290,23 @@ export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
                 </div>
                 
                 <div className="flex space-x-2 ml-4">
-                  <button className="btn-secondary text-sm">View Lease</button>
+                  <button 
+                    className="btn-secondary text-sm flex items-center space-x-1"
+                    onClick={() => {
+                      const property = mockProperties.find(p => p.id === tenant.propertyId);
+                      if (property) {
+                        setSelectedLease({
+                          tenant,
+                          property,
+                          leaseStart: new Date(tenant.leaseStart),
+                          leaseEnd: new Date(tenant.leaseEnd)
+                        });
+                      }
+                    }}
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View Lease</span>
+                  </button>
                   {(leaseStatus === 'expiring-soon' || leaseStatus === 'expired') && (
                     <button className="btn-primary text-sm">Renew</button>
                   )}
@@ -302,6 +325,16 @@ export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
           <h3 className="text-lg font-medium text-gray-900 mb-2">No leases found</h3>
           <p className="text-gray-600">Try adjusting your search or filter criteria</p>
         </div>
+      )}
+      
+      {selectedLease && (
+        <LeaseAgreement
+          tenant={selectedLease.tenant}
+          property={selectedLease.property}
+          leaseStart={selectedLease.leaseStart}
+          leaseEnd={selectedLease.leaseEnd}
+          onClose={() => setSelectedLease(null)}
+        />
       )}
     </div>
   );

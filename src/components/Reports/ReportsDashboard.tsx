@@ -6,37 +6,40 @@ export const ReportsDashboard: React.FC = () => {
 
 
   const financialData = {
-    totalRevenue: 156500,
-    totalExpenses: 45200,
-    netIncome: 111300,
-    occupancyRate: 77.8,
+    totalRevenue: 695000,
+    totalExpenses: 125000,
+    netIncome: 570000,
+    occupancyRate: 100,
     collectionRate: 98.5,
-    maintenanceCosts: 12800,
-    vacancyLoss: 8900,
-    propertyAppreciation: 5.2
+    maintenanceCosts: 45000,
+    vacancyLoss: 0,
+    propertyAppreciation: 8.5
   };
 
   const monthlyData = [
-    { month: 'Jan', revenue: 145000, expenses: 42000 },
-    { month: 'Feb', revenue: 148000, expenses: 38000 },
-    { month: 'Mar', revenue: 152000, expenses: 45000 },
-    { month: 'Apr', revenue: 149000, expenses: 41000 },
-    { month: 'May', revenue: 155000, expenses: 43000 },
-    { month: 'Jun', revenue: 156500, expenses: 45200 },
+    { month: 'Jan', revenue: 680000, expenses: 120000 },
+    { month: 'Feb', revenue: 690000, expenses: 115000 },
+    { month: 'Mar', revenue: 700000, expenses: 125000 },
+    { month: 'Apr', revenue: 695000, expenses: 120000 },
+    { month: 'May', revenue: 705000, expenses: 125000 },
+    { month: 'Jun', revenue: 695000, expenses: 125000 },
   ];
 
   const propertyPerformance = [
-    { name: 'Sunset Apartments', revenue: 60000, occupancy: 95.8 },
-    { name: 'Downtown Lofts', revenue: 57600, occupancy: 88.9 },
-    { name: 'Office Plaza', revenue: 38900, occupancy: 100 },
+    { name: 'Westlands Heights', revenue: 85000, occupancy: 100 },
+    { name: 'Kilimani Gardens', revenue: 95000, occupancy: 100 },
+    { name: 'Lavington Business Centre', revenue: 120000, occupancy: 100 },
+    { name: 'Karen Village', revenue: 150000, occupancy: 100 },
+    { name: 'Upperhill Plaza', revenue: 180000, occupancy: 100 },
+    { name: 'South B Estate', revenue: 65000, occupancy: 100 },
   ];
 
   const expenseBreakdown = [
-    { category: 'Maintenance', amount: 12800, percentage: 28.3 },
-    { category: 'Insurance', amount: 8500, percentage: 18.8 },
-    { category: 'Property Tax', amount: 15200, percentage: 33.6 },
-    { category: 'Management', amount: 5700, percentage: 12.6 },
-    { category: 'Utilities', amount: 3000, percentage: 6.6 },
+    { category: 'Maintenance', amount: 45000, percentage: 36.0 },
+    { category: 'Insurance', amount: 25000, percentage: 20.0 },
+    { category: 'Property Tax', amount: 35000, percentage: 28.0 },
+    { category: 'Management', amount: 15000, percentage: 12.0 },
+    { category: 'Utilities', amount: 5000, percentage: 4.0 },
   ];
 
   return (
@@ -70,7 +73,7 @@ export const ReportsDashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">Total Revenue</p>
-              <p className="text-3xl font-bold text-gray-900">${financialData.totalRevenue.toLocaleString()}</p>
+              <p className="text-3xl font-bold text-gray-900">KSh {financialData.totalRevenue.toLocaleString()}</p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-success-500 to-success-600 rounded-2xl flex items-center justify-center shadow-medium">
               <DollarSign className="w-7 h-7 text-white" />
@@ -86,7 +89,7 @@ export const ReportsDashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">Net Income</p>
-              <p className="text-3xl font-bold text-gray-900">${financialData.netIncome.toLocaleString()}</p>
+              <p className="text-3xl font-bold text-gray-900">KSh {financialData.netIncome.toLocaleString()}</p>
             </div>
             <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-medium">
               <TrendingUp className="w-7 h-7 text-white" />
@@ -210,7 +213,7 @@ export const ReportsDashboard: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-bold text-gray-900">
-                    ${expense.amount.toLocaleString()}
+                    KSh {expense.amount.toLocaleString()}
                   </div>
                   <div className="text-xs text-gray-500">
                     {expense.percentage}%
@@ -223,7 +226,7 @@ export const ReportsDashboard: React.FC = () => {
           <div className="mt-6 pt-4 border-t border-gray-200">
             <div className="flex items-center justify-between font-bold text-gray-900">
               <span>Total Expenses</span>
-              <span>${financialData.totalExpenses.toLocaleString()}</span>
+                                <span>KSh {financialData.totalExpenses.toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -250,7 +253,7 @@ export const ReportsDashboard: React.FC = () => {
               {propertyPerformance.map((property) => (
                 <tr key={property.name} className="border-b border-gray-100">
                   <td className="py-4 font-medium text-gray-900">{property.name}</td>
-                  <td className="py-4 font-bold text-gray-900">${property.revenue.toLocaleString()}</td>
+                  <td className="py-4 font-bold text-gray-900">KSh {property.revenue.toLocaleString()}</td>
                   <td className="py-4">
                     <div className="flex items-center space-x-2">
                       <div className="flex-1 bg-gray-200 rounded-full h-2 w-20">

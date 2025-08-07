@@ -45,7 +45,7 @@ export const Header: React.FC = () => {
             </div>
             <div className="text-right">
               <p className="text-sm font-bold text-gray-900">Sarah Johnson</p>
-              <p className="text-xs text-gray-500 font-medium">Botaye Manager</p>
+              <p className="text-xs text-gray-500 font-medium">Bottaye Manager</p>
             </div>
             <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors duration-300" />
           </div>

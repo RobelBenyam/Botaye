@@ -40,7 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
             <div className="absolute -inset-1 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
           </div>
           <div>
-            <h1 className="text-2xl font-display font-bold gradient-text">Botaye</h1>
+            <h1 className="text-2xl font-display font-bold gradient-text">Bottaye</h1>
             <p className="text-sm text-gray-500 font-medium">Property Management</p>
           </div>
         </div>

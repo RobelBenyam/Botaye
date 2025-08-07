@@ -32,7 +32,7 @@ function App() {
                 Welcome Back, Sarah
               </h1>
               <p className="text-xl text-gray-600 font-medium">
-                Here's what's happening with your Botaye properties today
+                Here's what's happening with your Bottaye properties today
               </p>
             </div>
             
@@ -54,7 +54,7 @@ function App() {
                     </div>
                     <div className="flex justify-between items-center p-3 bg-gradient-to-r from-success-50 to-transparent rounded-xl">
                       <span className="text-gray-700 font-medium">Avg. Rent</span>
-                      <span className="font-bold text-success-600">$3,400</span>
+                      <span className="font-bold text-success-600">KSh 115,833</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-gradient-to-r from-secondary-50 to-transparent rounded-xl">
                       <span className="text-gray-700 font-medium">Collection Rate</span>
@@ -63,16 +63,7 @@ function App() {
                   </div>
                 </div>
                 
-                <div className="glass-card text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow">
-                    <span className="text-2xl font-bold text-white">AI</span>
-                  </div>
-                  <h4 className="font-bold text-gray-900 mb-2">Smart Insights</h4>
-                  <p className="text-sm text-gray-600 mb-4">Get AI-powered recommendations for your properties</p>
-                  <button className="btn-primary text-sm py-2 px-4">
-                    Enable AI Assistant
-                  </button>
-                </div>
+
               </div>
             </div>
           </div>

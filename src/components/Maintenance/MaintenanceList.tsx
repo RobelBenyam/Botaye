@@ -166,11 +166,10 @@ export const MaintenanceList: React.FC<MaintenanceListProps> = ({ requests }) =>
                       )}
                     </div>
                     
-                    {request.estimatedCost && (
+                    {request.actualCost && (
                       <div className="mt-3">
                         <span className="text-sm text-gray-600">
-                          Estimated Cost: ${request.estimatedCost}
-                          {request.actualCost && ` | Actual Cost: $${request.actualCost}`}
+                          Actual Cost: KSh {request.actualCost.toLocaleString()}
                         </span>
                       </div>
                     )}

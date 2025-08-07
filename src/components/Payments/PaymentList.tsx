@@ -100,7 +100,7 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">Total Payments</p>
-              <p className="text-2xl font-bold text-gray-900">${getTotalAmount().toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-gray-900">KSh {getTotalAmount().toLocaleString()}</p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-medium">
               <DollarSign className="w-6 h-6 text-white" />
@@ -112,7 +112,7 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">Completed</p>
-              <p className="text-2xl font-bold text-gray-900">${getTotalAmount('completed').toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-gray-900">KSh {getTotalAmount('completed').toLocaleString()}</p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-success-500 to-success-600 rounded-2xl flex items-center justify-center shadow-medium">
               <CheckCircle className="w-6 h-6 text-white" />
@@ -124,7 +124,7 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">${getTotalAmount('pending').toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-gray-900">KSh {getTotalAmount('pending').toLocaleString()}</p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-warning-500 to-warning-600 rounded-2xl flex items-center justify-center shadow-medium">
               <Clock className="w-6 h-6 text-white" />
@@ -136,7 +136,7 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">Failed</p>
-              <p className="text-2xl font-bold text-gray-900">${getTotalAmount('failed').toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-gray-900">KSh {getTotalAmount('failed').toLocaleString()}</p>
             </div>
             <div className="w-12 h-12 bg-gradient-to-br from-danger-500 to-danger-600 rounded-2xl flex items-center justify-center shadow-medium">
               <AlertCircle className="w-6 h-6 text-white" />
@@ -221,7 +221,7 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
                       </span>
                     </td>
                     <td className="py-4 px-2">
-                      <div className="font-bold text-gray-900">${payment.amount.toLocaleString()}</div>
+                      <div className="font-bold text-gray-900">KSh {payment.amount.toLocaleString()}</div>
                     </td>
                     <td className="py-4 px-2">
                       <div className="flex items-center text-gray-700">

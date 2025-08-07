@@ -79,7 +79,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, on
           </div>
           <div className="flex items-center text-gray-900">
             <DollarSign className="w-5 h-5 mr-1 text-success-600" />
-            <span className="text-lg font-bold">${property.rentAmount.toLocaleString()}</span>
+            <span className="text-lg font-bold">KSh {property.rentAmount.toLocaleString()}</span>
             <span className="text-sm text-gray-500 ml-1">/mo</span>
           </div>
         </div>

@@ -41,8 +41,8 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
     },
     {
       title: 'Monthly Revenue',
-      value: `$${(stats.monthlyRevenue / 1000).toFixed(0)}K`,
-      subtitle: `$${stats.monthlyRevenue.toLocaleString()} total`,
+      value: `KSh ${(stats.monthlyRevenue / 1000).toFixed(0)}K`,
+      subtitle: `KSh ${stats.monthlyRevenue.toLocaleString()} total`,
       change: '+12.3%',
       changeType: 'positive',
       icon: DollarSign,
