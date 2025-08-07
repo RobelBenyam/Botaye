@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Download, Printer, X } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface LeaseAgreementProps {
   tenant: {
@@ -25,6 +27,41 @@ export const LeaseAgreement: React.FC<LeaseAgreementProps> = ({
   leaseEnd,
   onClose
 }) => {
+  const pdfRef = useRef<HTMLDivElement>(null);
+
+  const downloadPDF = async () => {
+    if (pdfRef.current) {
+      const canvas = await html2canvas(pdfRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`Lease_Agreement_${tenant.firstName}_${tenant.lastName}.pdf`);
+    }
+  };
+
+  const printDocument = () => {
+    window.print();
+  };
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
@@ -40,11 +77,17 @@ export const LeaseAgreement: React.FC<LeaseAgreementProps> = ({
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900">Lease Agreement</h2>
             <div className="flex items-center space-x-3">
-              <button className="btn-secondary flex items-center space-x-2">
+              <button 
+                onClick={printDocument}
+                className="btn-secondary flex items-center space-x-2"
+              >
                 <Printer className="w-4 h-4" />
                 <span>Print</span>
               </button>
-              <button className="btn-primary flex items-center space-x-2">
+              <button 
+                onClick={downloadPDF}
+                className="btn-primary flex items-center space-x-2"
+              >
                 <Download className="w-4 h-4" />
                 <span>Download PDF</span>
               </button>
@@ -58,7 +101,7 @@ export const LeaseAgreement: React.FC<LeaseAgreementProps> = ({
           </div>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div ref={pdfRef} className="p-6 space-y-6">
           {/* Header */}
           <div className="text-center border-b border-gray-200 pb-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">RESIDENTIAL LEASE AGREEMENT</h1>

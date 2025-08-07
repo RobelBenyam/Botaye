@@ -6,40 +6,45 @@ export const ReportsDashboard: React.FC = () => {
 
 
   const financialData = {
-    totalRevenue: 695000,
-    totalExpenses: 125000,
-    netIncome: 570000,
+    totalRevenue: 1685000,
+    totalExpenses: 280000,
+    netIncome: 1405000,
     occupancyRate: 100,
     collectionRate: 98.5,
-    maintenanceCosts: 45000,
+    maintenanceCosts: 85000,
     vacancyLoss: 0,
     propertyAppreciation: 8.5
   };
 
   const monthlyData = [
-    { month: 'Jan', revenue: 680000, expenses: 120000 },
-    { month: 'Feb', revenue: 690000, expenses: 115000 },
-    { month: 'Mar', revenue: 700000, expenses: 125000 },
-    { month: 'Apr', revenue: 695000, expenses: 120000 },
-    { month: 'May', revenue: 705000, expenses: 125000 },
-    { month: 'Jun', revenue: 695000, expenses: 125000 },
+    { month: 'Jan', revenue: 1685000, expenses: 280000 },
+    { month: 'Feb', revenue: 1690000, expenses: 275000 },
+    { month: 'Mar', revenue: 1700000, expenses: 285000 },
+    { month: 'Apr', revenue: 1695000, expenses: 280000 },
+    { month: 'May', revenue: 1705000, expenses: 285000 },
+    { month: 'Jun', revenue: 1685000, expenses: 285000 },
   ];
 
   const propertyPerformance = [
-    { name: 'Westlands Heights', revenue: 85000, occupancy: 100 },
-    { name: 'Kilimani Gardens', revenue: 95000, occupancy: 100 },
-    { name: 'Lavington Business Centre', revenue: 120000, occupancy: 100 },
-    { name: 'Karen Village', revenue: 150000, occupancy: 100 },
-    { name: 'Upperhill Plaza', revenue: 180000, occupancy: 100 },
-    { name: 'South B Estate', revenue: 65000, occupancy: 100 },
+    { name: 'Two Rivers Mall Residences', revenue: 120000, occupancy: 100 },
+    { name: 'Gigiri Diplomatic Heights', revenue: 180000, occupancy: 100 },
+    { name: 'Westlands Business Park', revenue: 150000, occupancy: 100 },
+    { name: 'Karen Golf View', revenue: 200000, occupancy: 100 },
+    { name: 'Upperhill Financial Centre', revenue: 220000, occupancy: 100 },
+    { name: 'South C Comfort Homes', revenue: 75000, occupancy: 100 },
+    { name: 'Lavington Green Apartments', revenue: 110000, occupancy: 100 },
+    { name: 'Kilimani Business Hub', revenue: 140000, occupancy: 100 },
+    { name: 'Westlands Executive Suites', revenue: 160000, occupancy: 100 },
+    { name: 'Karen Country Club Residences', revenue: 250000, occupancy: 100 },
   ];
 
   const expenseBreakdown = [
-    { category: 'Maintenance', amount: 45000, percentage: 36.0 },
-    { category: 'Insurance', amount: 25000, percentage: 20.0 },
-    { category: 'Property Tax', amount: 35000, percentage: 28.0 },
-    { category: 'Management', amount: 15000, percentage: 12.0 },
-    { category: 'Utilities', amount: 5000, percentage: 4.0 },
+    { category: 'Maintenance', amount: 85000, percentage: 30.4 },
+    { category: 'Insurance', amount: 56000, percentage: 20.0 },
+    { category: 'Property Tax', amount: 78400, percentage: 28.0 },
+    { category: 'Management', amount: 33600, percentage: 12.0 },
+    { category: 'Utilities', amount: 16800, percentage: 6.0 },
+    { category: 'Security', amount: 11200, percentage: 4.0 },
   ];
 
   return (

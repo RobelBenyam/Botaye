@@ -54,7 +54,7 @@ function App() {
                     </div>
                     <div className="flex justify-between items-center p-3 bg-gradient-to-r from-success-50 to-transparent rounded-xl">
                       <span className="text-gray-700 font-medium">Avg. Rent</span>
-                      <span className="font-bold text-success-600">KSh 115,833</span>
+                      <span className="font-bold text-success-600">KSh 168,500</span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-gradient-to-r from-secondary-50 to-transparent rounded-xl">
                       <span className="text-gray-700 font-medium">Collection Rate</span>
