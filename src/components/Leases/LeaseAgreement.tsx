@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { Download, Printer, X } from 'lucide-react';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 interface LeaseAgreementProps {
   tenant: {

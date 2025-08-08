@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Users, DollarSign, MoreVertical, Star, Zap, Shield } from 'lucide-react';
+import { MapPin, Users, MoreVertical, Star, Zap, Shield } from 'lucide-react';
 import { Property } from '../../types';
 
 interface PropertyCardProps {
