@@ -9,7 +9,7 @@ export const mockProperties: Property[] = [
     units: 45,
     rentAmount: 120000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Luxury apartments adjacent to Two Rivers Mall',
     amenities: ['Shopping Mall Access', 'Gym', 'Swimming Pool', 'Security', '24/7 Water', 'Backup Power'],
     createdAt: new Date('2023-01-15')
@@ -22,7 +22,7 @@ export const mockProperties: Property[] = [
     units: 28,
     rentAmount: 180000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Premium diplomatic area residences',
     amenities: ['Diplomatic Security', 'Garden', 'Parking', 'Security', 'Backup Power', 'Water Tank'],
     createdAt: new Date('2023-02-20')
@@ -35,7 +35,7 @@ export const mockProperties: Property[] = [
     units: 20,
     rentAmount: 150000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Modern office spaces in Westlands business district',
     amenities: ['Conference Rooms', 'Parking', 'Security', 'High-Speed Internet', 'Generator', 'Cafeteria'],
     createdAt: new Date('2023-03-10')
@@ -48,7 +48,7 @@ export const mockProperties: Property[] = [
     units: 12,
     rentAmount: 200000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab60b6b0e6c8?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab60b6b0e6c8?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Exclusive golf course view residences',
     amenities: ['Golf Course Access', 'Swimming Pool', 'Tennis Court', 'Security', 'Garden', 'Servant Quarters'],
     createdAt: new Date('2023-04-05')
@@ -61,7 +61,7 @@ export const mockProperties: Property[] = [
     units: 25,
     rentAmount: 220000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Premium financial district office complex',
     amenities: ['Conference Facilities', 'Parking', 'Security', 'High-Speed Internet', 'Cafeteria', 'Banking Services'],
     createdAt: new Date('2023-05-12')
@@ -74,7 +74,7 @@ export const mockProperties: Property[] = [
     units: 40,
     rentAmount: 75000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Comfortable family homes in South C',
     amenities: ['Parking', 'Security', 'Water Tank', 'Backup Power', 'Playground'],
     createdAt: new Date('2023-06-18')
@@ -87,7 +87,7 @@ export const mockProperties: Property[] = [
     units: 35,
     rentAmount: 110000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Green living apartments in upscale Lavington',
     amenities: ['Garden', 'Parking', 'Security', 'Solar Power', 'Water Tank', 'Recycling'],
     createdAt: new Date('2023-07-10')
@@ -100,7 +100,7 @@ export const mockProperties: Property[] = [
     units: 18,
     rentAmount: 140000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Modern business hub in Kilimani',
     amenities: ['Conference Rooms', 'Parking', 'Security', 'High-Speed Internet', 'Generator', 'Restaurant'],
     createdAt: new Date('2023-08-15')
@@ -113,7 +113,7 @@ export const mockProperties: Property[] = [
     units: 22,
     rentAmount: 160000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Executive suites for business professionals',
     amenities: ['Business Center', 'Gym', 'Parking', 'Security', 'Backup Power', 'Concierge'],
     createdAt: new Date('2023-09-20')
@@ -126,7 +126,7 @@ export const mockProperties: Property[] = [
     units: 15,
     rentAmount: 250000,
     status: 'occupied',
-    imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab60b6b0e6c8?w=400&h=300&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab60b6b0e6c8?w=400&h=300&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Luxury residences at Karen Country Club',
     amenities: ['Country Club Access', 'Golf Course', 'Swimming Pool', 'Tennis Court', 'Security', 'Fine Dining'],
     createdAt: new Date('2023-10-25')

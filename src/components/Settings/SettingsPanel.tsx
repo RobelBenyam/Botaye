@@ -294,7 +294,7 @@ export const SettingsPanel: React.FC = () => {
               onChange={(e) => updateSetting('preferences', 'currency', e.target.value)}
               className="select-field"
             >
-              <option value="USD">USD ($)</option>
+                              <option value="USD">USD</option>
               <option value="EUR">EUR (€)</option>
               <option value="GBP">GBP (£)</option>
             </select>
