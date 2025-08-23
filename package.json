@@ -10,14 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "@tanstack/react-query": "^5.85.5",
     "date-fns": "^2.30.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.62.0",
     "react-router-dom": "^6.8.1",
-    "recharts": "^2.8.0"
+    "recharts": "^2.8.0",
+    "zod": "^4.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

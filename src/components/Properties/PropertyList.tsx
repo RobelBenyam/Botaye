@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Plus, Filter, Search } from 'lucide-react';
 import { Property } from '../../types';
 import { PropertyCard } from './PropertyCard';
+import { PropertyModal } from './PropertyModal';
+import { useCreateProperty, useDeleteProperty, useUpdateProperty } from '../../hooks/useProperties';
+import { useToast } from '../Toast/ToastProvider';
 
 interface PropertyListProps {
   properties: Property[];
@@ -11,6 +14,11 @@ export const PropertyList: React.FC<PropertyListProps> = ({ properties }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'residential' | 'commercial'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'occupied' | 'vacant' | 'maintenance'>('all');
+  const [modalOpen, setModalOpen] = useState<null | { mode: 'create' } | { mode: 'edit'; property: Property }>(null);
+  const createProperty = useCreateProperty();
+  const updateProperty = useUpdateProperty();
+  const deleteProperty = useDeleteProperty();
+  const { addToast } = useToast();
 
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -25,7 +33,7 @@ export const PropertyList: React.FC<PropertyListProps> = ({ properties }) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Properties</h2>
-        <button className="btn-primary flex items-center space-x-2">
+        <button className="btn-primary flex items-center space-x-2" onClick={() => setModalOpen({ mode: 'create' })}>
           <Plus className="w-4 h-4" />
           <span>Add Property</span>
         </button>
@@ -78,7 +86,13 @@ export const PropertyList: React.FC<PropertyListProps> = ({ properties }) => {
             key={property.id}
             property={property}
             onView={(prop) => console.log('View property:', prop)}
-            onEdit={(prop) => console.log('Edit property:', prop)}
+            onEdit={(prop) => setModalOpen({ mode: 'edit', property: prop })}
+            onDelete={(prop) => {
+              deleteProperty.mutate(prop.id, {
+                onSuccess: () => addToast('Property deleted', 'success'),
+                onError: () => addToast('Failed to delete property', 'error'),
+              });
+            }}
           />
         ))}
       </div>
@@ -91,6 +105,31 @@ export const PropertyList: React.FC<PropertyListProps> = ({ properties }) => {
           <h3 className="text-lg font-medium text-gray-900 mb-2">No properties found</h3>
           <p className="text-gray-600">Try adjusting your search or filter criteria</p>
         </div>
+      )}
+
+      {modalOpen && (
+        <PropertyModal
+          mode={modalOpen.mode}
+          initial={modalOpen.mode === 'edit' ? modalOpen.property : undefined}
+          onClose={() => setModalOpen(null)}
+          onSubmit={(values) => {
+            if (modalOpen.mode === 'create') {
+              // values already match required shape minus id/createdAt; repo sets createdAt
+              // We cast createdAt out in repo
+              // @ts-ignore
+              createProperty.mutate(values, {
+                onSuccess: () => addToast('Property created', 'success'),
+                onError: () => addToast('Failed to create property', 'error'),
+              });
+            } else {
+              updateProperty.mutate({ id: modalOpen.property.id, data: values as any }, {
+                onSuccess: () => addToast('Property updated', 'success'),
+                onError: () => addToast('Failed to update property', 'error'),
+              });
+            }
+            setModalOpen(null);
+          }}
+        />
       )}
     </div>
   );

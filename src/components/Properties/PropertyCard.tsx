@@ -6,9 +6,10 @@ interface PropertyCardProps {
   property: Property;
   onEdit?: (property: Property) => void;
   onView?: (property: Property) => void;
+  onDelete?: (property: Property) => void;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onView }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, onView, onDelete }) => {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'occupied':
@@ -118,6 +119,14 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onEdit, on
           >
             Manage
           </button>
+          {onDelete && (
+            <button
+              onClick={() => onDelete(property)}
+              className="btn-ghost text-sm py-2.5"
+            >
+              Delete
+            </button>
+          )}
         </div>
       </div>
       

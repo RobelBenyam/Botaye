@@ -3,6 +3,10 @@ import { Plus, Search, FileText, Calendar, AlertTriangle, CheckCircle, Clock, Fi
 import { Tenant } from '../../types';
 import { mockProperties } from '../../data/mockData';
 import { LeaseAgreement } from './LeaseAgreement';
+import { RenewLeaseModal } from './RenewLeaseModal';
+import { useRenewLease, useTerminateLease } from '../../hooks/useTenants';
+import { TerminateLeaseModal } from './TerminateLeaseModal';
+import { useToast } from '../Toast/ToastProvider';
 
 interface LeaseListProps {
   tenants: Tenant[];
@@ -17,6 +21,11 @@ export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
     leaseStart: Date;
     leaseEnd: Date;
   } | null>(null);
+  const [renewTarget, setRenewTarget] = useState<Tenant | null>(null);
+  const renewLease = useRenewLease();
+  const [terminateTarget, setTerminateTarget] = useState<Tenant | null>(null);
+  const terminateLease = useTerminateLease();
+  const { addToast } = useToast();
 
   const getLeaseStatus = (tenant: Tenant) => {
     const now = new Date();
@@ -308,7 +317,10 @@ export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
                     <span>View Lease</span>
                   </button>
                   {(leaseStatus === 'expiring-soon' || leaseStatus === 'expired') && (
-                    <button className="btn-primary text-sm">Renew</button>
+                    <>
+                      <button className="btn-primary text-sm" onClick={() => setRenewTarget(tenant)}>Renew</button>
+                      <button className="btn-secondary text-sm" onClick={() => setTerminateTarget(tenant)}>Terminate</button>
+                    </>
                   )}
                 </div>
               </div>
@@ -334,6 +346,40 @@ export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
           leaseStart={selectedLease.leaseStart}
           leaseEnd={selectedLease.leaseEnd}
           onClose={() => setSelectedLease(null)}
+        />
+      )}
+
+      {renewTarget && (
+        <RenewLeaseModal
+          tenant={renewTarget}
+          onClose={() => setRenewTarget(null)}
+          onSubmit={({ newLeaseEnd, newRentAmount }) => {
+            renewLease.mutate(
+              { tenantId: renewTarget.id, newLeaseEnd, newRentAmount },
+              {
+                onSuccess: () => addToast('Lease renewed successfully', 'success'),
+                onError: () => addToast('Failed to renew lease', 'error'),
+              }
+            );
+            setRenewTarget(null);
+          }}
+        />
+      )}
+
+      {terminateTarget && (
+        <TerminateLeaseModal
+          tenant={terminateTarget}
+          onClose={() => setTerminateTarget(null)}
+          onSubmit={({ effectiveDate, reason, notes }) => {
+            terminateLease.mutate(
+              { tenantId: terminateTarget.id, effectiveDate, reason, notes },
+              {
+                onSuccess: () => addToast('Lease terminated', 'success'),
+                onError: () => addToast('Failed to terminate lease', 'error'),
+              }
+            );
+            setTerminateTarget(null);
+          }}
         />
       )}
     </div>

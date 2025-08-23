@@ -13,14 +13,21 @@ import { ReportsDashboard } from './components/Reports/ReportsDashboard';
 import { SettingsPanel } from './components/Settings/SettingsPanel';
 import { 
   mockProperties, 
-  mockTenants, 
   mockMaintenanceRequests, 
   mockPayments,
   mockDashboardStats 
 } from './data/mockData';
+import { useTenants } from './hooks/useTenants';
+import { useProperties } from './hooks/useProperties';
+import { usePayments } from './hooks/usePayments';
+import { useMaintenanceRequests } from './hooks/useMaintenance';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const { data: tenantsData, isLoading: tenantsLoading, isError: tenantsError } = useTenants();
+  const { data: propertiesData, isLoading: propertiesLoading, isError: propertiesError } = useProperties();
+  const { data: paymentsData, isLoading: paymentsLoading, isError: paymentsError } = usePayments();
+  const { data: maintenanceData, isLoading: maintenanceLoading, isError: maintenanceError } = useMaintenanceRequests();
 
   const renderContent = () => {
     switch (activeTab) {
@@ -69,15 +76,25 @@ function App() {
           </div>
         );
       case 'properties':
-        return <PropertyList properties={mockProperties} />;
+        if (propertiesLoading) return <div className="card p-6">Loading properties...</div>;
+        if (propertiesError) return <div className="card p-6 text-danger-700">Failed to load properties.</div>;
+        return <PropertyList properties={propertiesData || mockProperties} />;
       case 'tenants':
-        return <TenantList tenants={mockTenants} />;
+        if (tenantsLoading) return <div className="card p-6">Loading tenants...</div>;
+        if (tenantsError) return <div className="card p-6 text-danger-700">Failed to load tenants.</div>;
+        return <TenantList tenants={tenantsData || []} />;
       case 'leases':
-        return <LeaseList tenants={mockTenants} />;
+        if (tenantsLoading) return <div className="card p-6">Loading leases...</div>;
+        if (tenantsError) return <div className="card p-6 text-danger-700">Failed to load leases.</div>;
+        return <LeaseList tenants={tenantsData || []} />;
       case 'maintenance':
-        return <MaintenanceList requests={mockMaintenanceRequests} />;
+        if (maintenanceLoading) return <div className="card p-6">Loading maintenance...</div>;
+        if (maintenanceError) return <div className="card p-6 text-danger-700">Failed to load maintenance.</div>;
+        return <MaintenanceList requests={maintenanceData || mockMaintenanceRequests} />;
       case 'payments':
-        return <PaymentList payments={mockPayments} />;
+        if (paymentsLoading) return <div className="card p-6">Loading payments...</div>;
+        if (paymentsError) return <div className="card p-6 text-danger-700">Failed to load payments.</div>;
+        return <PaymentList payments={paymentsData || mockPayments} />;
       case 'reports':
         return <ReportsDashboard />;
       case 'settings':
