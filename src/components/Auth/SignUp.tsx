@@ -7,14 +7,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 
 const schema = z.object({
-  email: z.string().email(),
+  name: z.string().min(2, "Name must be at least 2 characters long"),
+  email: z.email(),
   password: z.string().min(6),
 });
 
 type FormValues = z.infer<typeof schema>;
 
-export const SignIn: React.FC = () => {
-  const { signIn } = useAuth();
+export const SignUp: React.FC = () => {
+  const { signUp } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -27,11 +28,10 @@ export const SignIn: React.FC = () => {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await signIn(values.email, values.password);
+      await signUp(values.name, values.email, values.password);
       navigate("/");
-    } catch (error) {
-      console.log("login error", error);
-      alert("Cannot signin");
+    } catch (e) {
+      alert("Cannot signup");
     }
   };
 
@@ -42,12 +42,28 @@ export const SignIn: React.FC = () => {
           <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center text-white">
             <LogIn className="w-4 h-4" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900">Sign in</h1>
+          <h1 className="text-xl font-bold text-gray-900">Sign up</h1>
         </div>
         <p className="text-xs text-gray-600 mb-4">
           Access your Botaye dashboard
         </p>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
+            <input
+              className="input-field"
+              type="text"
+              placeholder="John Doe"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-danger-600 text-xs mt-1">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -98,20 +114,13 @@ export const SignIn: React.FC = () => {
             disabled={isSubmitting}
             className="btn-primary w-full"
           >
-            {isSubmitting ? "Signing in..." : "Sign in"}
+            {isSubmitting ? "Signing Up..." : "Sign up"}
           </button>
         </form>
+
         <div className="mt-3 text-xs text-gray-600">
-          <Link
-            to="/reset-password"
-            className="text-primary-600 hover:underline"
-          >
-            Forgot password?
-          </Link>
-        </div>
-        <div className="mt-3 text-xs text-gray-600">
-          <Link to="/signup" className="text-primary-600 hover:underline">
-            Sign Up
+          <Link to="/signin" className="text-primary-600 hover:underline">
+            Sign in
           </Link>
         </div>
       </div>
