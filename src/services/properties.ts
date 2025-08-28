@@ -1,10 +1,14 @@
-import { Property } from '../types';
-import { mockProperties } from '../data/mockData';
+import { Property } from "../types";
+import { mockProperties } from "../data/mockData";
+import { readAllDocuments, updateDocument } from "../utils/db";
 
 export interface PropertiesRepository {
   list(): Promise<Property[]>;
-  create(data: Omit<Property, 'id' | 'createdAt'>): Promise<Property>;
-  update(id: string, data: Partial<Omit<Property, 'id' | 'createdAt'>>): Promise<Property>;
+  create(data: Omit<Property, "id" | "createdAt">): Promise<Property>;
+  update(
+    id: string,
+    data: Partial<Omit<Property, "id" | "createdAt">>
+  ): Promise<Property>;
   delete(id: string): Promise<void>;
 }
 
@@ -13,7 +17,8 @@ let propertiesStore: Property[] = mockProperties.map((p) => ({ ...p }));
 
 export const mockPropertiesRepository: PropertiesRepository = {
   async list(): Promise<Property[]> {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    const allProperties = await readAllDocuments("properties");
+    propertiesStore = allProperties as Property[];
     return propertiesStore;
   },
   async create(data): Promise<Property> {
@@ -27,8 +32,12 @@ export const mockPropertiesRepository: PropertiesRepository = {
     return newProperty;
   },
   async update(id, data): Promise<Property> {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    propertiesStore = propertiesStore.map((p) => (p.id === id ? { ...p, ...data } as Property : p));
+    try {
+      await updateDocument("properties", id, data);
+      propertiesStore = propertiesStore.map((p) =>
+        p.id === id ? ({ ...p, ...data } as Property) : p
+      );
+    } catch (e) {}
     const updated = propertiesStore.find((p) => p.id === id)!;
     return updated;
   },
@@ -36,4 +45,4 @@ export const mockPropertiesRepository: PropertiesRepository = {
     await new Promise((resolve) => setTimeout(resolve, 200));
     propertiesStore = propertiesStore.filter((p) => p.id !== id);
   },
-}; 
+};
