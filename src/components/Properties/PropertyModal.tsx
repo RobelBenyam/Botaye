@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Property } from "../../types";
 import { X } from "lucide-react";
+import { uploadFileToCloudinary } from "../../utils/file";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -13,6 +14,7 @@ const schema = z.object({
   rentAmount: z.coerce.number().min(0),
   status: z.enum(["occupied", "vacant", "maintenance"]),
   imageUrl: z.string().url().optional().or(z.literal("")),
+  imageFile: z.any().optional(),
   description: z.string().optional(),
   amenities: z.string().optional(), // comma-separated input
 });
@@ -61,8 +63,21 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
         },
   });
 
-  const submit = (v: any) => {
+  const submit = async (v: any) => {
     console.log("submitting", v);
+    const file = v.imageFile?.[0];
+    console.log("image is ", file);
+    if (file) {
+      try {
+        const imageUrl = await uploadFileToCloudinary(
+          v.imageFile[0],
+          "propertyImages"
+        );
+        v.floorPlanUrl = imageUrl;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
     onSubmit({
       name: String(v.name),
       address: String(v.address),
@@ -72,6 +87,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
       status: v.status,
       imageUrl: v.imageUrl ? String(v.imageUrl) : undefined,
       description: v.description ? String(v.description) : undefined,
+      floorPlanUrl: v.floorPlanUrl ? String(v.floorPlanUrl) : undefined,
       amenities: v.amenities
         ? String(v.amenities)
             .split(",")
@@ -183,6 +199,67 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               Image URL
             </label>
             <input className="input-field" {...register("imageUrl")} />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Floor plan Image
+            </label>
+            {(errors as any)?.imageUrl && (
+              <p className="text-danger-600 text-xs mt-1">
+                {String((errors as any).imageUrl?.message)}
+              </p>
+            )}
+            {mode === "edit" && (
+              <span className="text-xs text-gray-500">
+                (Optional if you do not want to change the floor plan image)
+              </span>
+            )}
+            <div className="flex items-center gap-2 mb-2">
+              <input type="file" accept="image/*" {...register("imageFile")} />
+            </div>
+
+            {(typeof initial?.floorPlanUrl === "string" && initial?.imageUrl) ||
+            (typeof initial?.floorPlanUrl === "string" &&
+              initial?.imageUrl === "")
+              ? null
+              : null}
+            {typeof initial?.floorPlanUrl === "string" && initial?.imageUrl && (
+              <div className="mb-2">
+                <img
+                  src={initial.floorPlanUrl}
+                  alt="Property"
+                  className="rounded-lg max-h-32 object-cover border"
+                />
+              </div>
+            )}
+            {/* Preview selected imageFile */}
+            {typeof window !== "undefined" &&
+              typeof (window as any).URL !== "undefined" &&
+              typeof (window as any).URL.createObjectURL === "function" &&
+              typeof (window as any).document !== "undefined" &&
+              typeof (window as any).document.querySelector === "function" &&
+              typeof (window as any).document.querySelector(
+                'input[type="file"]'
+              ) !== "undefined" &&
+              typeof (window as any).document.querySelector(
+                'input[type="file"]'
+              )?.files !== "undefined" &&
+              (window as any).document.querySelector('input[type="file"]').files
+                .length > 0 && (
+                <div className="mb-2">
+                  <img
+                    src={URL.createObjectURL(
+                      (window as any).document.querySelector(
+                        'input[type="file"]'
+                      ).files[0]
+                    )}
+                    alt="Preview"
+                    className="rounded-lg max-h-32 object-cover border"
+                  />
+                </div>
+              )}
+
+            {/* <input className="input-field" {...register("imageUrl")} /> */}
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">

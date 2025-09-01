@@ -23,7 +23,6 @@ interface TenantListProps {
 }
 
 export const TenantList: React.FC<TenantListProps> = ({ tenants }) => {
-  console.log("Tesnats ", tenants);
   const [searchTerm, setSearchTerm] = useState("");
   const { addToast } = useToast();
 

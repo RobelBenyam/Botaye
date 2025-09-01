@@ -2,11 +2,12 @@ export interface Property {
   id: string;
   name: string;
   address: string;
-  type: 'residential' | 'commercial';
+  type: "residential" | "commercial";
   units: number;
   rentAmount: number;
-  status: 'occupied' | 'vacant' | 'maintenance';
+  status: "occupied" | "vacant" | "maintenance";
   imageUrl?: string;
+  floorPlanUrl?: string;
   description?: string;
   amenities: string[];
   createdAt: Date;
@@ -24,7 +25,7 @@ export interface Tenant {
   leaseEnd: Date;
   rentAmount: number;
   depositAmount: number;
-  status: 'active' | 'pending' | 'expired';
+  status: "active" | "pending" | "expired";
   emergencyContact: {
     name: string;
     phone: string;
@@ -38,9 +39,15 @@ export interface MaintenanceRequest {
   tenantId?: string;
   title: string;
   description: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'open' | 'in-progress' | 'completed' | 'cancelled';
-  category: 'plumbing' | 'electrical' | 'hvac' | 'appliance' | 'structural' | 'other';
+  priority: "low" | "medium" | "high" | "urgent";
+  status: "open" | "in-progress" | "completed" | "cancelled";
+  category:
+    | "plumbing"
+    | "electrical"
+    | "hvac"
+    | "appliance"
+    | "structural"
+    | "other";
   assignedTo?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -54,12 +61,12 @@ export interface Payment {
   tenantId: string;
   propertyId: string;
   amount: number;
-  type: 'rent' | 'deposit' | 'fee' | 'utility';
-  status: 'pending' | 'completed' | 'failed';
+  type: "rent" | "deposit" | "fee" | "utility";
+  status: "pending" | "completed" | "failed";
   dueDate: Date;
   paidDate?: Date;
   description: string;
-  method?: 'cash' | 'check' | 'card' | 'transfer';
+  method?: "cash" | "check" | "card" | "transfer";
 }
 
 export interface DashboardStats {
@@ -69,4 +76,4 @@ export interface DashboardStats {
   monthlyRevenue: number;
   maintenanceRequests: number;
   overduePayments: number;
-} 
+}

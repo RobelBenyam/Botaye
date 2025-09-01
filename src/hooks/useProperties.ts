@@ -17,8 +17,13 @@ export function useProperties() {
 export function useCreateProperty() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: Omit<Property, "id" | "createdAt">) =>
-      await createDocument("properties", data), // true for incremental id if needed
+    mutationFn: async (
+      data: Omit<Property, "id" | "createdAt"> & { imageFile?: File }
+    ) => {
+      console.log("Creating property", data, data.imageUrl);
+
+      return await createDocument("properties", data); // true for incremental id if needed
+    },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: propertiesQueryKeys.all }),
   });
