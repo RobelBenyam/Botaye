@@ -12,3 +12,9 @@ export function usePayments() {
     queryFn: () => mockPaymentsRepository.list(),
   });
 } 
+
+export function useCreatePayment() {
+  return {
+    create: (payment: Payment) => mockPaymentsRepository.create(payment),
+  };
+}
