@@ -4,8 +4,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-import { auth, db } from "./firebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
+import { auth } from "./firebaseConfig";
 
 export const firebaseSignIn = async (email: string, password: string) => {
   try {

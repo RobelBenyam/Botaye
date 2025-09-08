@@ -12,7 +12,6 @@ import { LeaseList } from "./components/Leases/LeaseList";
 import { ReportsDashboard } from "./components/Reports/ReportsDashboard";
 import { SettingsPanel } from "./components/Settings/SettingsPanel";
 import {
-  mockProperties,
   mockMaintenanceRequests,
   mockPayments,
   mockDashboardStats,

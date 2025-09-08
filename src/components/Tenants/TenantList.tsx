@@ -14,7 +14,6 @@ import { TenantModal } from "./TenantModal";
 import { useToast } from "../Toast/ToastProvider";
 import {
   useCreateTenant,
-  useTenants,
   useUpdateTenant,
 } from "../../hooks/useTenants";
 

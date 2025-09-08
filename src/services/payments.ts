@@ -1,5 +1,4 @@
 import { Payment } from "../types";
-import { mockPayments } from "../data/mockData";
 import { createDocument, readAllDocuments } from "../utils/db";
 
 export interface PaymentsRepository {
