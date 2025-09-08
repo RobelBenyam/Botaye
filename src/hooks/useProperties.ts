@@ -20,8 +20,6 @@ export function useCreateProperty() {
     mutationFn: async (
       data: Omit<Property, "id" | "createdAt"> & { imageFile?: File }
     ) => {
-      console.log("Creating property", data, data.imageUrl);
-
       return await createDocument("properties", data); // true for incremental id if needed
     },
     onSuccess: () =>

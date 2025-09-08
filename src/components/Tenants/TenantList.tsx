@@ -8,17 +8,25 @@ import {
   MapPin,
   User,
 } from "lucide-react";
-import { Property, Tenant } from "../../types";
+import { Tenant } from "../../types";
 import { TenantModal } from "./TenantModal";
 import { useToast } from "../Toast/ToastProvider";
-import { useCreateTenant, useUpdateTenant } from "../../hooks/useTenants";
+import {
+  useCreateTenant,
+  useUpdateTenant,
+  useTenants,
+} from "../../hooks/useTenants";
 import { useProperties } from "../../hooks/useProperties";
 
 interface TenantListProps {
-  tenants: Tenant[];
+  tenants?: Tenant[];
 }
 
-export const TenantList: React.FC<TenantListProps> = ({ tenants }) => {
+export const TenantList: React.FC<TenantListProps> = ({
+  tenants: propsTenants,
+}) => {
+  const { data: hookTenants } = useTenants();
+  const tenants = propsTenants || hookTenants || [];
   const [searchTerm, setSearchTerm] = useState("");
   const { addToast } = useToast();
   const { data: propertiesData } = useProperties();

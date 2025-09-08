@@ -21,10 +21,10 @@ import { TerminateLeaseModal } from "./TerminateLeaseModal";
 import { useToast } from "../Toast/ToastProvider";
 
 interface LeaseListProps {
-  tenants: Tenant[];
+  tenants?: Tenant[];
 }
 
-export const LeaseList: React.FC<LeaseListProps> = ({ tenants }) => {
+export const LeaseList: React.FC<LeaseListProps> = ({ tenants = [] }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<
     "all" | "active" | "pending" | "expired" | "expiring-soon"

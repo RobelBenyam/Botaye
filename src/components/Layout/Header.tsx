@@ -1,9 +1,16 @@
-import React from 'react';
-import { Bell, Search, User, ChevronDown, MessageSquare, Sun } from 'lucide-react';
+import React from "react";
+import {
+  Bell,
+  Search,
+  User,
+  ChevronDown,
+  MessageSquare,
+  Sun,
+} from "lucide-react";
 
 export const Header: React.FC = () => {
   return (
-    <header className="bg-white/80 backdrop-blur-xl border-b border-white/50 fixed top-0 right-0 left-72 z-20 shadow-soft">
+    <header className="bg-white/80 backdrop-blur-xl border-b border-white/50 fixed top-0 right-0 left-72 z-40 h-36 shadow-soft">
       <div className="flex items-center justify-between px-8 py-4">
         <div className="flex items-center space-x-6">
           <div className="relative group">
@@ -15,7 +22,7 @@ export const Header: React.FC = () => {
             />
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/10 to-secondary-500/10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
           </div>
-          
+
           <div className="hidden lg:flex items-center space-x-4">
             <div className="text-sm">
               <span className="text-gray-500">Good morning,</span>
@@ -24,18 +31,18 @@ export const Header: React.FC = () => {
             <Sun className="w-4 h-4 text-amber-500" />
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-4">
           <button className="relative p-3 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-2xl transition-all duration-300 group">
             <MessageSquare className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-success-500 rounded-full animate-pulse"></span>
           </button>
-          
+
           <button className="relative p-3 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-2xl transition-all duration-300 group">
             <Bell className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-danger-500 rounded-full animate-pulse"></span>
           </button>
-          
+
           <div className="flex items-center space-x-3 bg-white/80 backdrop-blur-sm rounded-2xl p-2 pr-4 border border-gray-200 hover:border-primary-300 hover:shadow-medium transition-all duration-300 cursor-pointer group">
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform duration-300">
@@ -45,13 +52,15 @@ export const Header: React.FC = () => {
             </div>
             <div className="text-right">
               <p className="text-sm font-bold text-gray-900">Sarah Johnson</p>
-              <p className="text-xs text-gray-500 font-medium">Bottaye Manager</p>
+              <p className="text-xs text-gray-500 font-medium">
+                Bottaye Manager
+              </p>
             </div>
             <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors duration-300" />
           </div>
         </div>
       </div>
-      
+
       <div className="px-8 pb-4">
         <div className="flex items-center space-x-4 text-sm">
           <span className="px-3 py-1.5 bg-success-100 text-success-700 rounded-full font-medium">
@@ -65,4 +74,4 @@ export const Header: React.FC = () => {
       </div>
     </header>
   );
-}; 
+};

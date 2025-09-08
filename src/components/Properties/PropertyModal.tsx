@@ -109,7 +109,6 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
       ? (JSON.parse(userString) as User)
       : null;
 
-
     onSubmit({
       name: String(v.name),
       address: String(v.address),
@@ -123,8 +122,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
           ? uploadedFloorPlanUrls
           : v.floorPlanUrls || [],
       description: v.description ? String(v.description) : undefined,
-      floorPlanUrl: v.floorPlanUrl ? String(v.floorPlanUrl) : undefined,
-      createdBy: currentUser ? currentUser.i
+      createdBy: currentUser ? currentUser.id : "unknown",
       amenities: v.amenities
         ? String(v.amenities)
             .split(",")

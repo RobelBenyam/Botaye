@@ -18,10 +18,10 @@ import { useProperties } from "../../hooks/useProperties";
 import { useTenants } from "../../hooks/useTenants";
 
 interface PaymentListProps {
-  payments: Payment[];
+  payments?: Payment[];
 }
 
-export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
+export const PaymentList: React.FC<PaymentListProps> = ({ payments = [] }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const createPayment = useCreatePayment();
   // properties and tenants

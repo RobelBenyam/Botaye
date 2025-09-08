@@ -1,35 +1,41 @@
-import React from 'react';
-import { 
-  Home, 
-  Building2, 
-  Users, 
-  FileText, 
-  Wrench, 
-  DollarSign, 
+import React from "react";
+import { NavLink } from "react-router-dom";
+import {
+  Home,
+  Building2,
+  Users,
+  FileText,
+  Wrench,
+  DollarSign,
   BarChart3,
   Settings,
-  Sparkles
-} from 'lucide-react';
-
-interface SidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-}
+  Sparkles,
+} from "lucide-react";
 
 const navigationItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home },
-  { id: 'properties', label: 'Properties', icon: Building2 },
-  { id: 'tenants', label: 'Tenants', icon: Users },
-  { id: 'leases', label: 'Leases', icon: FileText },
-  { id: 'maintenance', label: 'Maintenance', icon: Wrench },
-  { id: 'payments', label: 'Payments', icon: DollarSign },
-  { id: 'reports', label: 'Reports', icon: BarChart3 },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: "dashboard", label: "Dashboard", icon: Home, path: "/" },
+  {
+    id: "properties",
+    label: "Properties",
+    icon: Building2,
+    path: "/properties",
+  },
+  { id: "tenants", label: "Tenants", icon: Users, path: "/tenants" },
+  { id: "leases", label: "Leases", icon: FileText, path: "/leases" },
+  {
+    id: "maintenance",
+    label: "Maintenance",
+    icon: Wrench,
+    path: "/maintenance",
+  },
+  { id: "payments", label: "Payments", icon: DollarSign, path: "/payments" },
+  { id: "reports", label: "Reports", icon: BarChart3, path: "/reports" },
+  { id: "settings", label: "Settings", icon: Settings, path: "/settings" },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
+export const Sidebar: React.FC = () => {
   return (
-    <div className="w-72 h-screen fixed left-0 top-0 z-30 bg-gradient-to-b from-white via-white to-gray-50/30 backdrop-blur-xl border-r border-white/50 shadow-medium">
+    <div className="w-72 h-screen bg-gradient-to-b from-white via-white to-gray-50/30 backdrop-blur-xl border-r border-white/50 shadow-medium">
       <div className="p-8">
         <div className="flex items-center space-x-4 group">
           <div className="relative">
@@ -40,34 +46,44 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
             <div className="absolute -inset-1 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
           </div>
           <div>
-            <h1 className="text-2xl font-display font-bold gradient-text">Bottaye</h1>
-            <p className="text-sm text-gray-500 font-medium">Property Management</p>
+            <h1 className="text-2xl font-display font-bold gradient-text">
+              Bottaye
+            </h1>
+            <p className="text-sm text-gray-500 font-medium">
+              Property Management
+            </p>
           </div>
         </div>
       </div>
-      
+
       <nav className="px-6">
         <div className="space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             return (
-              <button
+              <NavLink
                 key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`sidebar-item w-full group ${
-                  activeTab === item.id ? 'active' : ''
-                }`}
+                to={item.path}
+                className={({ isActive }) =>
+                  `sidebar-item w-full group ${isActive ? "active" : ""}`
+                }
               >
-                <Icon className="w-5 h-5 mr-4 icon" />
-                <span className="font-semibold text-sm tracking-wide">{item.label}</span>
-                {activeTab === item.id && (
-                  <div className="ml-auto w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                {({ isActive }) => (
+                  <>
+                    <Icon className="w-5 h-5 mr-4 icon" />
+                    <span className="font-semibold text-sm tracking-wide">
+                      {item.label}
+                    </span>
+                    {isActive && (
+                      <div className="ml-auto w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                    )}
+                  </>
                 )}
-              </button>
+              </NavLink>
             );
           })}
         </div>
       </nav>
     </div>
   );
-}; 
+};

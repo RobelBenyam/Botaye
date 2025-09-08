@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, Filter, Search } from "lucide-react";
 import { Property } from "../../types";
 import { PropertyCard } from "./PropertyCard";
@@ -7,14 +8,20 @@ import {
   useCreateProperty,
   useDeleteProperty,
   useUpdateProperty,
+  useProperties,
 } from "../../hooks/useProperties";
 import { useToast } from "../Toast/ToastProvider";
 
 interface PropertyListProps {
-  properties: Property[];
+  properties?: Property[];
 }
 
-export const PropertyList: React.FC<PropertyListProps> = ({ properties }) => {
+export const PropertyList: React.FC<PropertyListProps> = ({
+  properties: propsProperties,
+}) => {
+  const navigate = useNavigate();
+  const { data: hookProperties } = useProperties();
+  const properties = propsProperties || hookProperties || [];
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<
     "all" | "residential" | "commercial"
@@ -100,7 +107,7 @@ export const PropertyList: React.FC<PropertyListProps> = ({ properties }) => {
           <PropertyCard
             key={property.id}
             property={property}
-            onView={(prop) => console.log("View property:", prop)}
+            onView={(prop) => navigate(`/properties/${prop.id}`)}
             onEdit={(prop) => setModalOpen({ mode: "edit", property: prop })}
             onDelete={(prop) => {
               deleteProperty.mutate(prop.id, {

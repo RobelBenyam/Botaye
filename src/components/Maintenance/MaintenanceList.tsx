@@ -14,11 +14,11 @@ import { mockProperties, mockTenants } from "../../data/mockData";
 import { useCreateMaintenanceRequest } from "../../hooks/useMaintenance";
 
 interface MaintenanceListProps {
-  requests: MaintenanceRequest[];
+  requests?: MaintenanceRequest[];
 }
 
 export const MaintenanceList: React.FC<MaintenanceListProps> = ({
-  requests,
+  requests = [],
 }) => {
   const [modalOpen, setModalOpen] = useState<{
     mode: "create" | "edit";
