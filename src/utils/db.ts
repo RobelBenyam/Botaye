@@ -11,7 +11,6 @@ import {
   increment,
   setDoc,
   getDoc,
-  DocumentData,
 } from "firebase/firestore";
 
 const getNextId = async (collectionName: string): Promise<number> => {

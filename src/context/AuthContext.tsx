@@ -6,12 +6,15 @@ import React, {
   useState,
 } from "react";
 import { firebaseSignIn, firebaseSignUp } from "../utils/auth.firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../utils/firebaseConfig";
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "manager" | "viewer";
+  role: "superadmin" | "property_manager";
+  assignedProperties?: string[]; // IDs of properties assigned to the manager
 }
 
 interface AuthContextValue {
@@ -37,32 +40,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const isAuthenticated = !!user;
-
   const signIn = async (email: string, _password: string) => {
     const loggedUser = await firebaseSignIn(email, _password);
     console.log(loggedUser);
-    const mockUser: User = {
-      id: loggedUser.uid,
-      name: "Sarah Admin",
-      email,
-      role: "admin",
-    };
-    setUser(mockUser);
-    localStorage.setItem("auth.user", JSON.stringify(mockUser));
+
+    // Fetch user data from Firestore after login
+    // Import these at the top: import { doc, getDoc } from "firebase/firestore"; import { db } from "../utils/firebaseConfig";
+    const userDocRef = doc(db, "users", loggedUser.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      const userObj: User = {
+        id: loggedUser.uid,
+        name: userData.name,
+        email: userData.email,
+        role: userData.role,
+        assignedProperties: userData.assignedProperties || [],
+      };
+      setUser(userObj);
+      localStorage.setItem("auth.user", JSON.stringify(userObj));
+    } else {
+      // fallback if user doc not found
+      const fallbackUser: User = {
+        id: loggedUser.uid,
+        name: loggedUser.displayName || "",
+        email,
+        role: "property_manager", // or default role
+      };
+      setUser(fallbackUser);
+      localStorage.setItem("auth.user", JSON.stringify(fallbackUser));
+    }
   };
   const signUp = async (name: string, email: string, _password: string) => {
-    const newUser = await firebaseSignUp(email, _password, {
+    const userCredential = await firebaseSignUp(email, _password, {
       displayName: name,
     });
-    console.log(newUser);
-    const mockUser: User = {
-      email,
+    console.log(userCredential);
+    const userObj: User = {
+      id: userCredential.uid,
       name,
-      id: newUser.uid,
-      role: "admin",
+      email,
+      role: "property_manager",
     };
-    setUser(mockUser);
-    localStorage.setItem("auth.user", JSON.stringify(mockUser));
+    setUser(userObj);
+    localStorage.setItem("auth.user", JSON.stringify(userObj));
   };
 
   const signOut = () => {
@@ -87,3 +109,5 @@ export function useAuth() {
   if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
   return ctx;
 }
+
+export { AuthContext };

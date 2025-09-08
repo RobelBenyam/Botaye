@@ -10,10 +10,12 @@ import {
   Filter,
 } from "lucide-react";
 import { Payment } from "../../types";
-import { mockTenants, mockProperties } from "../../data/mockData";
+// import { mockTenants, mockProperties } from "../../data/mockData";
 import { PaymentModal } from "./PaymentModal"; // Import your modal
 import { useCreatePayment } from "../../hooks/usePayments";
 import { useToast } from "../Toast/ToastProvider";
+import { useProperties } from "../../hooks/useProperties";
+import { useTenants } from "../../hooks/useTenants";
 
 interface PaymentListProps {
   payments: Payment[];
@@ -22,6 +24,10 @@ interface PaymentListProps {
 export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const createPayment = useCreatePayment();
+  // properties and tenants
+
+  const { data: propertiesData } = useProperties();
+  const { data: tenantsData } = useTenants();
   const { addToast } = useToast();
 
   const [filterStatus, setFilterStatus] = useState<
@@ -36,8 +42,8 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
   }>(null);
 
   const filteredPayments = payments.filter((payment) => {
-    const tenant = mockTenants.find((t) => t.id === payment.tenantId);
-    const property = mockProperties.find((p) => p.id === payment.propertyId);
+    const tenant = tenantsData?.find((t) => t.id === payment.tenantId);
+    const property = propertiesData?.find((p) => p.id === payment.propertyId);
     const matchesSearch =
       tenant?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tenant?.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,12 +90,12 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
   };
 
   const getTenantName = (tenantId: string) => {
-    const tenant = mockTenants.find((t) => t.id === tenantId);
+    const tenant = tenantsData?.find((t) => t.id === tenantId);
     return tenant ? `${tenant.firstName} ${tenant.lastName}` : "Unknown Tenant";
   };
 
   const getPropertyName = (propertyId: string) => {
-    const property = mockProperties.find((p) => p.id === propertyId);
+    const property = propertiesData?.find((p) => p.id === propertyId);
     return property?.name || "Unknown Property";
   };
 

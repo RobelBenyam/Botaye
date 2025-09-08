@@ -28,20 +28,28 @@ export const firebaseLogout = async () => {
 export const firebaseSignUp = async (
   email: string,
   password: string,
-  userData: any
+  userData: { displayName: string }
 ) => {
   try {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(user.user, {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    await updateProfile(userCredential.user, {
       displayName: userData.displayName,
     });
-    // await setDoc(doc(db, "users", user.user.uid), {
-    //   ...userData,
-    //   uid: user.user.uid,
-    // });
-    return user.user;
+    // Save user data to Firestore with role and assignedProperties
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      uid: userCredential.user.uid,
+      name: userData.displayName,
+      email,
+      role: "property_manager",
+      assignedProperties: [],
+    });
+    return userCredential.user;
   } catch (error) {
-    console.log("erro happend", error);
+    console.log("error happened", error);
     throw error;
   }
 };

@@ -1,7 +1,8 @@
+import { User } from "../context/AuthContext";
 import { Tenant } from "../types";
-import { mockTenants } from "../data/mockData";
 import { readAllDocuments, updateDocument } from "../utils/db";
 
+const mockTenants: Tenant[] = [];
 export interface TenantsRepository {
   list(): Promise<Tenant[]>;
   // Future: create(data: Partial<Tenant>): Promise<Tenant>;
@@ -14,6 +15,8 @@ export const mockTenantsRepository: TenantsRepository = {
     // Simulate latency so loading states are visible in UI
     const allTenants = await readAllDocuments("tenants");
     console.log("all tenants", allTenants);
+    // Convert Firestore Timestamp fields to JS Date objects
+
     const tenantsWithDates = allTenants.map((tenant: any) => ({
       ...tenant,
       createdAt: tenant.createdAt?.toDate
@@ -30,6 +33,19 @@ export const mockTenantsRepository: TenantsRepository = {
         : tenant.leaseEnd,
     }));
     console.log("all tenants with dates", tenantsWithDates);
+
+    const userString = localStorage.getItem("auth.user");
+    const currentUser: User | null = userString
+      ? (JSON.parse(userString) as User)
+      : null;
+    console.log("Current User:", currentUser);
+    if (currentUser?.role === "property_manager") {
+      const userTenants = (tenantsWithDates as Tenant[]).filter(
+        (t) =>
+          t.propertyId && currentUser.assignedProperties?.includes(t.propertyId)
+      );
+      return userTenants as Tenant[];
+    }
 
     return tenantsWithDates as Tenant[];
   },
