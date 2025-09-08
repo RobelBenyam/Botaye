@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Property } from "../../types";
 import { X } from "lucide-react";
 import { uploadFileToCloudinary } from "../../utils/file";
+import { User } from "../../context/AuthContext";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -78,6 +79,11 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
         console.error("Error uploading image:", error);
       }
     }
+    const userString = localStorage.getItem("auth.user");
+    const currentUser: User | null = userString
+      ? (JSON.parse(userString) as User)
+      : null;
+
     onSubmit({
       name: String(v.name),
       address: String(v.address),
@@ -88,6 +94,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
       imageUrl: v.imageUrl ? String(v.imageUrl) : undefined,
       description: v.description ? String(v.description) : undefined,
       floorPlanUrl: v.floorPlanUrl ? String(v.floorPlanUrl) : undefined,
+      createdBy: currentUser ? currentUser.id : "",
       amenities: v.amenities
         ? String(v.amenities)
             .split(",")

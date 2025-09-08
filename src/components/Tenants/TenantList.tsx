@@ -8,14 +8,11 @@ import {
   MapPin,
   User,
 } from "lucide-react";
-import { Tenant } from "../../types";
-import { mockProperties } from "../../data/mockData";
+import { Property, Tenant } from "../../types";
 import { TenantModal } from "./TenantModal";
 import { useToast } from "../Toast/ToastProvider";
-import {
-  useCreateTenant,
-  useUpdateTenant,
-} from "../../hooks/useTenants";
+import { useCreateTenant, useUpdateTenant } from "../../hooks/useTenants";
+import { useProperties } from "../../hooks/useProperties";
 
 interface TenantListProps {
   tenants: Tenant[];
@@ -24,9 +21,9 @@ interface TenantListProps {
 export const TenantList: React.FC<TenantListProps> = ({ tenants }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { addToast } = useToast();
+  const { data: propertiesData } = useProperties();
 
   const updateTenant = useUpdateTenant();
-
   const [filterStatus, setFilterStatus] = useState<
     "all" | "active" | "pending" | "expired"
   >("all");
@@ -49,7 +46,7 @@ export const TenantList: React.FC<TenantListProps> = ({ tenants }) => {
   >(null);
 
   const getPropertyName = (propertyId: string) => {
-    const property = mockProperties.find((p) => p.id === propertyId);
+    const property = propertiesData?.find((p) => p.id === propertyId);
     return property?.name || "Unknown Property";
   };
 

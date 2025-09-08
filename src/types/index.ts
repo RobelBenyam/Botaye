@@ -11,6 +11,7 @@ export interface Property {
   description?: string;
   amenities: string[];
   createdAt: Date;
+  createdBy: string;
 }
 
 export interface Tenant {
