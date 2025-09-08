@@ -1,6 +1,6 @@
 import { Property } from "../types";
-import { mockProperties } from "../data/mockData";
 import { readAllDocuments, updateDocument } from "../utils/db";
+import { User } from "../context/AuthContext";
 
 export interface PropertiesRepository {
   list(): Promise<Property[]>;
@@ -13,16 +13,32 @@ export interface PropertiesRepository {
 }
 
 // In-memory store for mock operations
-let propertiesStore: Property[] = mockProperties.map((p) => ({ ...p }));
+let propertiesStore: Property[] = [];
 
 export const mockPropertiesRepository: PropertiesRepository = {
   async list(): Promise<Property[]> {
     const allProperties = await readAllDocuments("properties");
+    // Get the current user from localStorage or any auth context if available
+    const userString = localStorage.getItem("auth.user");
+    const currentUser: User | null = userString
+      ? (JSON.parse(userString) as User)
+      : null;
+    console.log("Current User:", currentUser);
+    if (currentUser?.role === "property_manager") {
+      console.log("all ", allProperties);
+
+      const userProperties = (allProperties as Property[]).filter((p) =>
+        // p.createdBy === currentUser.id ||
+        currentUser.assignedProperties?.includes?.(p.id)
+      );
+      propertiesStore = userProperties as Property[];
+      return userProperties as Property[];
+    }
+
     propertiesStore = allProperties as Property[];
     return propertiesStore;
   },
   async create(data): Promise<Property> {
-    await new Promise((resolve) => setTimeout(resolve, 300));
     const newProperty: Property = {
       id: Math.random().toString(36).slice(2),
       createdAt: new Date(),
