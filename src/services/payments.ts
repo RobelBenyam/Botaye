@@ -1,3 +1,4 @@
+import { User } from "../context/AuthContext";
 import { Payment } from "../types";
 import { createDocument, readAllDocuments } from "../utils/db";
 
@@ -11,6 +12,20 @@ export const mockPaymentsRepository: PaymentsRepository = {
     try {
       const fetchedPayments = await readAllDocuments("payments");
 
+      const userString = localStorage.getItem("auth.user");
+      const currentUser: User | null = userString
+        ? (JSON.parse(userString) as User)
+        : null;
+      console.log("Current User:", currentUser);
+      if (currentUser?.role === "property_manager") {
+        const userPayments = (fetchedPayments as Payment[]).filter(
+          (p) =>
+            p.propertyId &&
+            currentUser.assignedProperties?.includes(p.propertyId)
+        );
+        console.log("Filtered Payments for Property Manager:", userPayments);
+        return userPayments;
+      }
       console.log("all payments", fetchedPayments);
       if (fetchedPayments) {
         return fetchedPayments as Payment[];

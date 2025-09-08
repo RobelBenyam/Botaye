@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import { MaintenanceRequest } from '../types';
-import { mockMaintenanceRepository } from '../services/maintenance';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { MaintenanceRequest } from "../types";
+import { mockMaintenanceRepository } from "../services/maintenance";
 
 export const maintenanceQueryKeys = {
-  all: ['maintenanceRequests'] as const,
+  all: ["maintenanceRequests"] as const,
 };
 
 export function useMaintenanceRequests() {
@@ -11,4 +11,16 @@ export function useMaintenanceRequests() {
     queryKey: maintenanceQueryKeys.all,
     queryFn: () => mockMaintenanceRepository.list(),
   });
-} 
+}
+
+export function useCreateMaintenanceRequest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: MaintenanceRequest) =>
+      mockMaintenanceRepository.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: maintenanceQueryKeys.all });
+    },
+  });
+}
