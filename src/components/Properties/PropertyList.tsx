@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
+=======
+>>>>>>> 2cd59c59a76b40053f06a3259c20017228e1d894
 import { Plus, Filter, Search } from "lucide-react";
 import { Property } from "../../types";
 import { PropertyCard } from "./PropertyCard";
@@ -8,7 +11,10 @@ import {
   useCreateProperty,
   useDeleteProperty,
   useUpdateProperty,
+<<<<<<< HEAD
   useProperties,
+=======
+>>>>>>> 2cd59c59a76b40053f06a3259c20017228e1d894
 } from "../../hooks/useProperties";
 import { useToast } from "../Toast/ToastProvider";
 
@@ -16,12 +22,16 @@ interface PropertyListProps {
   properties?: Property[];
 }
 
+<<<<<<< HEAD
 export const PropertyList: React.FC<PropertyListProps> = ({
   properties: propsProperties,
 }) => {
   const navigate = useNavigate();
   const { data: hookProperties } = useProperties();
   const properties = propsProperties || hookProperties || [];
+=======
+export const PropertyList: React.FC<PropertyListProps> = ({ properties }) => {
+>>>>>>> 2cd59c59a76b40053f06a3259c20017228e1d894
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<
     "all" | "residential" | "commercial"
@@ -107,7 +117,11 @@ export const PropertyList: React.FC<PropertyListProps> = ({
           <PropertyCard
             key={property.id}
             property={property}
+<<<<<<< HEAD
             onView={(prop) => navigate(`/properties/${prop.id}`)}
+=======
+            onView={(prop) => console.log("View property:", prop)}
+>>>>>>> 2cd59c59a76b40053f06a3259c20017228e1d894
             onEdit={(prop) => setModalOpen({ mode: "edit", property: prop })}
             onDelete={(prop) => {
               deleteProperty.mutate(prop.id, {
