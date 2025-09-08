@@ -14,10 +14,12 @@ const schema = z.object({
   units: z.coerce.number().int().min(1),
   rentAmount: z.coerce.number().min(0),
   status: z.enum(["occupied", "vacant", "maintenance"]),
-  imageUrl: z.string().url().optional().or(z.literal("")),
-  imageFile: z.any().optional(),
+  imageUrls: z.array(z.string().url()).optional(),
+  imageFiles: z.any().optional(),
+  floorPlanUrls: z.array(z.string().url()).optional(),
+  floorPlanFiles: z.any().optional(),
   description: z.string().optional(),
-  amenities: z.string().optional(), // comma-separated input
+  amenities: z.string().optional(),
 });
 
 interface PropertyModalProps {
@@ -36,6 +38,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
@@ -47,7 +50,8 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
           units: initial.units,
           rentAmount: initial.rentAmount,
           status: initial.status,
-          imageUrl: initial.imageUrl || "",
+          imageUrls: initial.imageUrls || [],
+          floorPlanUrls: initial.floorPlanUrls || [],
           description: initial.description || "",
           amenities: initial.amenities?.join(", ") || "",
         }
@@ -58,31 +62,53 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
           units: 1,
           rentAmount: 0,
           status: "vacant",
-          imageUrl: "",
+          imageUrls: [],
+          floorPlanUrls: [],
           description: "",
           amenities: "",
         },
   });
 
+  const selectedFiles = watch("imageFiles") as FileList | undefined;
+  const selectedFloorPlanFiles = watch("floorPlanFiles") as
+    | FileList
+    | undefined;
+
   const submit = async (v: any) => {
-    console.log("submitting", v);
-    const file = v.imageFile?.[0];
-    console.log("image is ", file);
-    if (file) {
+    let uploadedUrls: string[] = [];
+    let uploadedFloorPlanUrls: string[] = [];
+
+    // Upload property images
+    const files: File[] = v.imageFiles ? Array.from(v.imageFiles) : [];
+    if (files.length > 0) {
       try {
-        const imageUrl = await uploadFileToCloudinary(
-          v.imageFile[0],
-          "propertyImages"
+        uploadedUrls = await Promise.all(
+          files.map((file) => uploadFileToCloudinary(file, "propertyImages"))
         );
-        v.floorPlanUrl = imageUrl;
       } catch (error) {
-        console.error("Error uploading image:", error);
+        console.error("Error uploading images:", error);
       }
     }
+
+    // Upload floor plan images
+    const floorFiles: File[] = v.floorPlanFiles
+      ? Array.from(v.floorPlanFiles)
+      : [];
+    if (floorFiles.length > 0) {
+      try {
+        uploadedFloorPlanUrls = await Promise.all(
+          floorFiles.map((file) => uploadFileToCloudinary(file, "floorPlans"))
+        );
+      } catch (error) {
+        console.error("Error uploading floor plan images:", error);
+      }
+    }
+
     const userString = localStorage.getItem("auth.user");
     const currentUser: User | null = userString
       ? (JSON.parse(userString) as User)
       : null;
+
 
     onSubmit({
       name: String(v.name),
@@ -91,10 +117,14 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
       units: Number(v.units),
       rentAmount: Number(v.rentAmount),
       status: v.status,
-      imageUrl: v.imageUrl ? String(v.imageUrl) : undefined,
+      imageUrls: uploadedUrls.length > 0 ? uploadedUrls : v.imageUrls || [],
+      floorPlanUrls:
+        uploadedFloorPlanUrls.length > 0
+          ? uploadedFloorPlanUrls
+          : v.floorPlanUrls || [],
       description: v.description ? String(v.description) : undefined,
       floorPlanUrl: v.floorPlanUrl ? String(v.floorPlanUrl) : undefined,
-      createdBy: currentUser ? currentUser.id : "",
+      createdBy: currentUser ? currentUser.i
       amenities: v.amenities
         ? String(v.amenities)
             .split(",")
@@ -102,7 +132,6 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
             .filter(Boolean)
         : [],
     });
-    console.log("After on sub");
   };
 
   return (
@@ -135,23 +164,25 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               Name
             </label>
             <input className="input-field" {...register("name")} />
-            {(errors as any)?.name && (
+            {errors.name && (
               <p className="text-danger-600 text-xs mt-1">
-                {String((errors as any).name?.message)}
+                {String(errors.name?.message)}
               </p>
             )}
           </div>
+
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Address
             </label>
             <input className="input-field" {...register("address")} />
-            {(errors as any)?.address && (
+            {errors.address && (
               <p className="text-danger-600 text-xs mt-1">
-                {String((errors as any).address?.message)}
+                {String(errors.address?.message)}
               </p>
             )}
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Type
@@ -161,6 +192,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               <option value="commercial">Commercial</option>
             </select>
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Status
@@ -171,6 +203,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               <option value="maintenance">Maintenance</option>
             </select>
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Units
@@ -180,12 +213,13 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               className="input-field"
               {...register("units")}
             />
-            {(errors as any)?.units && (
+            {errors.units && (
               <p className="text-danger-600 text-xs mt-1">
-                {String((errors as any).units?.message)}
+                {String(errors.units?.message)}
               </p>
             )}
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Base Rent (KSh)
@@ -195,79 +229,89 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               className="input-field"
               {...register("rentAmount")}
             />
-            {(errors as any)?.rentAmount && (
+            {errors.rentAmount && (
               <p className="text-danger-600 text-xs mt-1">
-                {String((errors as any).rentAmount?.message)}
+                {String(errors.rentAmount?.message)}
               </p>
             )}
           </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image URL
-            </label>
-            <input className="input-field" {...register("imageUrl")} />
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Floor plan Image
-            </label>
-            {(errors as any)?.imageUrl && (
-              <p className="text-danger-600 text-xs mt-1">
-                {String((errors as any).imageUrl?.message)}
-              </p>
-            )}
-            {mode === "edit" && (
-              <span className="text-xs text-gray-500">
-                (Optional if you do not want to change the floor plan image)
-              </span>
-            )}
-            <div className="flex items-center gap-2 mb-2">
-              <input type="file" accept="image/*" {...register("imageFile")} />
-            </div>
 
-            {(typeof initial?.floorPlanUrl === "string" && initial?.imageUrl) ||
-            (typeof initial?.floorPlanUrl === "string" &&
-              initial?.imageUrl === "")
-              ? null
-              : null}
-            {typeof initial?.floorPlanUrl === "string" && initial?.imageUrl && (
-              <div className="mb-2">
-                <img
-                  src={initial.floorPlanUrl}
-                  alt="Property"
-                  className="rounded-lg max-h-32 object-cover border"
-                />
-              </div>
-            )}
-            {/* Preview selected imageFile */}
-            {typeof window !== "undefined" &&
-              typeof (window as any).URL !== "undefined" &&
-              typeof (window as any).URL.createObjectURL === "function" &&
-              typeof (window as any).document !== "undefined" &&
-              typeof (window as any).document.querySelector === "function" &&
-              typeof (window as any).document.querySelector(
-                'input[type="file"]'
-              ) !== "undefined" &&
-              typeof (window as any).document.querySelector(
-                'input[type="file"]'
-              )?.files !== "undefined" &&
-              (window as any).document.querySelector('input[type="file"]').files
-                .length > 0 && (
-                <div className="mb-2">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Property Images
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              {...register("imageFiles")}
+            />
+
+            {initial?.imageUrls && initial.imageUrls.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {initial.imageUrls.map((url, i) => (
                   <img
-                    src={URL.createObjectURL(
-                      (window as any).document.querySelector(
-                        'input[type="file"]'
-                      ).files[0]
-                    )}
-                    alt="Preview"
+                    key={i}
+                    src={url}
+                    alt={`Property ${i}`}
                     className="rounded-lg max-h-32 object-cover border"
                   />
-                </div>
-              )}
+                ))}
+              </div>
+            )}
 
-            {/* <input className="input-field" {...register("imageUrl")} /> */}
+            {selectedFiles && selectedFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {Array.from(selectedFiles).map((file, i) => (
+                  <img
+                    key={i}
+                    src={URL.createObjectURL(file)}
+                    alt={`Preview ${i}`}
+                    className="rounded-lg max-h-32 object-cover border"
+                  />
+                ))}
+              </div>
+            )}
           </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Floor Plan Images
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              {...register("floorPlanFiles")}
+            />
+
+            {initial?.floorPlanUrls && initial.floorPlanUrls.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {initial.floorPlanUrls.map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt={`Floor Plan ${i}`}
+                    className="rounded-lg max-h-32 object-cover border"
+                  />
+                ))}
+              </div>
+            )}
+
+            {selectedFloorPlanFiles && selectedFloorPlanFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {Array.from(selectedFloorPlanFiles).map((file, i) => (
+                  <img
+                    key={i}
+                    src={URL.createObjectURL(file)}
+                    alt={`Floor Plan Preview ${i}`}
+                    className="rounded-lg max-h-32 object-cover border"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Amenities (comma-separated)
@@ -278,6 +322,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               {...register("amenities")}
             />
           </div>
+
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
@@ -288,6 +333,7 @@ export const PropertyModal: React.FC<PropertyModalProps> = ({
               {...register("description")}
             />
           </div>
+
           <div className="md:col-span-2 flex justify-end space-x-2 pt-1">
             <button type="button" onClick={onClose} className="btn-ghost">
               Cancel

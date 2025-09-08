@@ -6,7 +6,7 @@ export interface Property {
   units: number;
   rentAmount: number;
   status: "occupied" | "vacant" | "maintenance";
-  imageUrl?: string;
+  imageUrls?: string[];
   floorPlanUrl?: string;
   description?: string;
   amenities: string[];
@@ -36,7 +36,7 @@ export interface Tenant {
 
 export interface MaintenanceRequest {
   id: string;
-  propertyId: string;
+  propertyId: string; 
   tenantId?: string;
   title: string;
   description: string;
