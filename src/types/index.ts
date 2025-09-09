@@ -7,11 +7,7 @@ export interface Property {
   rentAmount: number;
   status: "occupied" | "vacant" | "maintenance";
   imageUrls?: string[];
-<<<<<<< HEAD
   floorPlanUrls: string[];
-=======
-  floorPlanUrl?: string;
->>>>>>> 2cd59c59a76b40053f06a3259c20017228e1d894
   description?: string;
   amenities: string[];
   unitsList?: { name: string; description?: string; imageUrls?: string[] }[];
@@ -39,9 +35,30 @@ export interface Tenant {
   };
 }
 
+export interface Payment {
+  id: string;
+  tenantId: string;
+  propertyId: string;
+  amount: number;
+  type: "rent" | "deposit" | "fee" | "utility";
+  status: "pending" | "completed" | "failed";
+  dueDate: Date;
+  paidDate?: Date;
+  description: string;
+  method?: "cash" | "check" | "card" | "transfer";
+}
+
+export interface DashboardStats {
+  totalProperties: number;
+  totalUnits: number;
+  occupiedProperties: number;
+  monthlyRevenue: number;
+  maintenanceRequests: number;
+  overduePayments: number;
+}
 export interface MaintenanceRequest {
   id: string;
-  propertyId: string; 
+  propertyId: string;
   tenantId?: string;
   title: string;
   description: string;
@@ -60,26 +77,4 @@ export interface MaintenanceRequest {
   completedAt?: Date;
   estimatedCost?: number;
   actualCost?: number;
-}
-
-export interface Payment {
-  id: string;
-  tenantId: string;
-  propertyId: string;
-  amount: number;
-  type: "rent" | "deposit" | "fee" | "utility";
-  status: "pending" | "completed" | "failed";
-  dueDate: Date;
-  paidDate?: Date;
-  description: string;
-  method?: "cash" | "check" | "card" | "transfer";
-}
-
-export interface DashboardStats {
-  totalProperties: number;
-  totalUnits: number;
-  occupiedUnits: number;
-  monthlyRevenue: number;
-  maintenanceRequests: number;
-  overduePayments: number;
 }
