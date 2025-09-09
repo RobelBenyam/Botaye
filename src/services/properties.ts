@@ -28,8 +28,7 @@ export const mockPropertiesRepository: PropertiesRepository = {
       console.log("all ", allProperties);
 
       const userProperties = (allProperties as Property[]).filter(
-        (_p) => _p.createdBy === currentUser.id
-        // currentUser.assignedProperties?.includes?.(_p.id)
+        (_p) => currentUser.assignedProperties?.includes?.(_p.id)
       );
       propertiesStore = userProperties as Property[];
       return userProperties as Property[];
