@@ -15,7 +15,9 @@ import { ReportsDashboard } from "./components/Reports/ReportsDashboard";
 import { SettingsPanel } from "./components/Settings/SettingsPanel";
 import { Header } from "./components/Layout/Header";
 import { Sidebar } from "./components/Layout/Sidebar";
+
 import App from "./App";
+import { SearchPage } from "./components/Layout/SearchResults";
 
 const AppLayout: React.FC = () => {
   return (
@@ -48,6 +50,10 @@ const router = createBrowserRouter([
           { path: "payments", element: <PaymentList /> },
           { path: "reports", element: <ReportsDashboard /> },
           { path: "settings", element: <SettingsPanel /> },
+          {
+            path: "search",
+            element: <SearchPage />,
+          },
         ],
       },
     ],

@@ -32,7 +32,6 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
   payments,
 }) => {
   const [activities, setActivities] = useState<Activity[]>([]);
-  // const [tenants, setTenants] = useState<Tenant[]>([]);
 
   useEffect(() => {
     const fetchTenantsAndGenerateActivities = async () => {
@@ -53,7 +52,6 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({
           depositAmount: t.depositAmount || 0,
           emergencyContact: t.emergencyContact || "",
         }));
-        // setTenants(fetchedTenants);
 
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DashboardStats } from "./components/Dashboard/DashboardStats";
 import { RecentActivity } from "./components/Dashboard/RecentActivity";
 import { readAllDocuments } from "./utils/db";
+import { useAuth } from "./context/AuthContext";
 import {
   Property,
   MaintenanceRequest,
@@ -60,17 +61,32 @@ function App() {
   const [rawMaintenanceRequests, setRawMaintenanceRequests] = useState<any[]>(
     []
   );
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchFromDatabase = async () => {
       try {
-        setaRawProperties(await readAllDocuments("properties"));
-        setRawMaintenanceRequests(
-          await readAllDocuments("maintenance_requests")
-        );
-        setRawPayments(await readAllDocuments("payments"));
+        const propertiesFromDB = await readAllDocuments("properties");
+        setaRawProperties(propertiesFromDB);
 
-        const properties: Property[] = rawProperties.map((doc: any) => ({
+        const maintenanceFromDb = await readAllDocuments(
+          "maintenance_requests"
+        );
+        setRawMaintenanceRequests(maintenanceFromDb);
+
+        const paymentsFromDb = await readAllDocuments("payments");
+        setRawPayments(paymentsFromDb);
+        console.log(
+          "fetched data from db",
+          "maintenance",
+          maintenanceFromDb,
+          "payments",
+          paymentsFromDb,
+          "properties",
+          propertiesFromDB
+        );
+
+        const properties: Property[] = propertiesFromDB.map((doc: any) => ({
           id: doc.id,
           name: doc.name ?? "",
           address: doc.address ?? "",
@@ -87,8 +103,8 @@ function App() {
           createdBy: doc.createdBy ?? "",
         }));
 
-        const maintenanceRequests: MaintenanceRequest[] =
-          rawMaintenanceRequests.map((doc: any) => ({
+        const maintenanceRequests: MaintenanceRequest[] = maintenanceFromDb.map(
+          (doc: any) => ({
             id: doc.id,
             propertyId: doc.propertyId ?? "",
             title: doc.title ?? "",
@@ -99,8 +115,9 @@ function App() {
             updatedAt: doc.updatedAt ?? "",
             assignedTo: doc.assignedTo ?? "",
             category: doc.category ?? "",
-          }));
-        const payments: Payment[] = rawPayments.map((doc: any) => ({
+          })
+        );
+        const payments: Payment[] = paymentsFromDb.map((doc: any) => ({
           id: doc.id,
           propertyId: doc.propertyId ?? "",
           tenantId: doc.tenantId ?? "",
@@ -150,17 +167,13 @@ function App() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar remains fixed */}
-      {/* <Sidebar /> */}
       <div className="flex-1 flex flex-col">
-        {/* Header remains at the top */}
-        {/* <Header /> */}
-        <main className="flex-1 overflow-auto pt-40 p-8">
+        <main className="flex-1 overflow-auto pt-16 p-8">
           <div className="max-w-7xl mx-auto">
             <div className="page-enter space-y-8">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl lg:text-5xl font-bold font-display gradient-text mb-3">
-                  Welcome Back, Sarah
+                  Welcome Back, {user?.name ?? "Guest"}
                 </h1>
                 <p className="text-xl text-gray-600 font-medium">
                   Here's what's happening with your Bottaye properties today
