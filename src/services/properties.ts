@@ -1,7 +1,6 @@
 import { Property } from "../types";
 import { readAllDocuments, updateDocument } from "../utils/db";
 import { User } from "../context/AuthContext";
-import { useAuth } from "../context/AuthContext";
 
 export interface PropertiesRepository {
   list(): Promise<Property[]>;

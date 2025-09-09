@@ -16,7 +16,7 @@ interface DashboardStatsProps {
 export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
   const statCards = [
     {
-      title: "Total Buildings",
+      title: "Total Properties",
       value: stats.totalProperties,
       icon: Building2,
       gradient: "from-blue-500 to-blue-600",

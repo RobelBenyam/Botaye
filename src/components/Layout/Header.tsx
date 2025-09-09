@@ -1,12 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Bell,
-  User,
-  ChevronDown,
-  MessageSquare,
-  Sun,
-  UserIcon,
-} from "lucide-react";
+import { Bell, ChevronDown, MessageSquare, Sun, UserIcon } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { SearchBar } from "./SearchBar";
 

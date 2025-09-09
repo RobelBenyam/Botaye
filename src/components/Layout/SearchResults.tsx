@@ -102,10 +102,6 @@ export const SearchPage: React.FC = () => {
     );
   }, [query, properties, tenants]);
 
-  function setModalOpen(arg0: { mode: string; property: Property }): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <div className="max-w-7xl mx-auto p-8">
       <h1 className="text-2xl font-bold mb-6">Search results for "{query}"</h1>
@@ -134,9 +130,6 @@ export const SearchPage: React.FC = () => {
                 key={property.id}
                 property={property}
                 onView={(prop) => navigate(`/properties/${prop.id}`)}
-                onEdit={(prop) =>
-                  setModalOpen({ mode: "edit", property: prop })
-                }
                 onDelete={(prop) => {
                   deleteProperty.mutate(prop.id, {
                     onSuccess: () => addToast("Property deleted", "success"),
