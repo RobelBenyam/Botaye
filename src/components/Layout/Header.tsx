@@ -1,38 +1,29 @@
-import React from "react";
-import {
-  Bell,
-  Search,
-  UserIcon as UserIcon,
-  ChevronDown,
-  MessageSquare,
-  Sun,
-} from "lucide-react";
-import { User } from "../../context/AuthContext";
+import React, { useEffect, useRef, useState } from "react";
+import { Bell, ChevronDown, MessageSquare, Sun, UserIcon } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { SearchBar } from "./SearchBar";
 
 export const Header: React.FC = () => {
-  const userString = localStorage.getItem("auth.user");
-  const currentUser: User | null = userString
-    ? (JSON.parse(userString) as User)
-    : null;
+  const { user } = useAuth();
+
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-white/50 fixed top-0 right-0 left-72 z-40 h-36 shadow-soft">
       <div className="flex items-center justify-between px-8 py-4">
         <div className="flex items-center space-x-6">
-          <div className="relative group">
-            <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 group-focus-within:text-primary-500 transition-colors duration-300" />
-            <input
-              type="text"
-              placeholder="Search properties, tenants, or anything..."
-              className="pl-12 pr-6 py-3 w-96 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all duration-300 placeholder-gray-400 text-sm font-medium"
-            />
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/10 to-secondary-500/10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-          </div>
-
+          <SearchBar />
           <div className="hidden lg:flex items-center space-x-4">
             <div className="text-sm">
-              <span className="text-gray-500">Good morning,</span>
+              <span className="text-gray-500">
+                {(() => {
+                  const hour = new Date().getHours();
+                  if (hour < 12) return "Good morning";
+                  if (hour < 18) return "Good afternoon";
+                  return "Good evening";
+                })()}
+                ,
+              </span>
               <span className="text-gray-900 font-semibold ml-1">
-                {currentUser?.name.split(" ")[0] || "User"}
+                {user?.name ?? "User"}
               </span>
             </div>
             <Sun className="w-4 h-4 text-amber-500" />
@@ -59,13 +50,14 @@ export const Header: React.FC = () => {
             </div>
             <div className="text-right">
               <p className="text-sm font-bold text-gray-900">
-                {currentUser?.name}
+                {user?.name ?? "Guest"}
               </p>
               <p className="text-xs text-gray-500 font-medium">
-                Bottaye {currentUser?.role}
+                Bottaye {user?.role}
               </p>
             </div>
-            <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors duration-300" />
+            {/* <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors duration-300" /> */}
+            <UserDropdown />
           </div>
         </div>
       </div>
@@ -82,5 +74,46 @@ export const Header: React.FC = () => {
         </div>
       </div>
     </header>
+  );
+};
+
+const UserDropdown = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { signOut } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center space-x-2"
+      >
+        <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors duration-300" />
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+          <button
+            onClick={signOut}
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-lg"
+          >
+            Log Out
+          </button>
+        </div>
+      )}
+    </div>
   );
 };

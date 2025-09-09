@@ -1,39 +1,131 @@
-// import { Sidebar } from "./components/Layout/Sidebar";
-// import { Header } from "./components/Layout/Header";
+import { useEffect, useState } from "react";
 import { DashboardStats } from "./components/Dashboard/DashboardStats";
 import { RecentActivity } from "./components/Dashboard/RecentActivity";
-import { User } from "./context/AuthContext";
-import { mockDashboardStats } from "./data/mockData";
+import { useAuth } from "./context/AuthContext";
+import {
+  Property,
+  MaintenanceRequest,
+  Payment,
+  DashboardStats as StatsType,
+} from "./types";
+import { useProperties } from "./hooks/useProperties";
+import { useMaintenanceRequests } from "./hooks/useMaintenance";
+import { usePayments } from "./hooks/usePayments";
+
+const calculateDashboardStats = (
+  properties: Property[],
+  maintenanceRequests: MaintenanceRequest[],
+  payments: Payment[]
+) => {
+  const totalProperties = properties.length;
+  const totalUnits = properties.reduce((sum, p) => sum + p.units, 0);
+  const occupiedProperties = properties.filter(
+    (p) => p.status === "occupied"
+  ).length;
+
+  const now = new Date();
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 30);
+  const monthlyRevenue = payments
+    .filter(
+      (p) =>
+        p.status === "completed" &&
+        p.paidDate &&
+        new Date(p.paidDate) >= thirtyDaysAgo
+    )
+    .reduce((sum, p) => sum + p.amount, 0);
+
+  const totalMaintenanceRequests = maintenanceRequests.length;
+  const overduePayments = payments.filter(
+    (p) => p.type === "rent" && p.status === "pending"
+  ).length;
+
+  return {
+    totalProperties,
+    totalUnits,
+    occupiedProperties,
+    monthlyRevenue,
+    maintenanceRequests: totalMaintenanceRequests,
+    overduePayments,
+  } as StatsType;
+};
 
 function App() {
-  const userString = localStorage.getItem("auth.user");
-  const currentUser: User | null = userString
-    ? (JSON.parse(userString) as User)
-    : null;
+  const { user } = useAuth();
+
+  const { data: properties = [] } = useProperties();
+  const { data: maintenanceRequestsRaw = [] } = useMaintenanceRequests();
+  const { data: paymentsRaw = [] } = usePayments();
+
+  const propertyIds = properties.map((p) => p.id);
+  const maintenanceRequests = maintenanceRequestsRaw.filter((m) =>
+    propertyIds.includes(m.propertyId)
+  );
+  const payments = paymentsRaw.filter((p) =>
+    propertyIds.includes(p.propertyId)
+  );
+
+  const [stats, setStats] = useState<StatsType | null>(null);
+
+  useEffect(() => {
+    const computedStats = calculateDashboardStats(
+      properties,
+      maintenanceRequests,
+      payments
+    );
+    setStats(computedStats);
+  }, [properties, maintenanceRequests, payments]);
+
+  const rentPayments = payments.filter((p) => p.type === "rent");
+  const totalRentDue = rentPayments.reduce((sum, p) => sum + p.amount, 0);
+  const totalRentCollected = rentPayments
+    .filter((p) => p.status === "completed")
+    .reduce((sum, p) => sum + p.amount, 0);
+  const collectionRate =
+    totalRentDue > 0 ? (totalRentCollected / totalRentDue) * 100 : 0;
+  const avgRent =
+    stats && stats.occupiedProperties > 0
+      ? stats.monthlyRevenue / stats.occupiedProperties
+      : 0;
+  const occupancyRate = Math.round(
+    stats && stats.totalUnits
+      ? (stats.occupiedProperties / stats.totalUnits) * 100
+      : 0
+  );
+
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar remains fixed */}
-      {/* <Sidebar /> */}
       <div className="flex-1 flex flex-col">
-        {/* Header remains at the top */}
-        {/* <Header /> */}
-        <main className="flex-1 overflow-auto pt-40 p-8">
+        <main className="flex-1 overflow-auto pt-16 p-8">
           <div className="max-w-7xl mx-auto">
             <div className="page-enter space-y-8">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl lg:text-5xl font-bold font-display gradient-text mb-3">
-                  Welcome Back, {currentUser?.name.split(" ")[0] || "User"}!
+                  Welcome Back, {user?.name ?? "Guest"}
                 </h1>
                 <p className="text-xl text-gray-600 font-medium">
                   Here's what's happening with your Bottaye properties today
                 </p>
               </div>
 
-              <DashboardStats stats={mockDashboardStats} />
+              <DashboardStats
+                stats={{
+                  totalProperties: stats?.totalProperties ?? 0,
+                  totalUnits: stats?.totalUnits ?? 0,
+                  occupiedProperties: stats?.occupiedProperties ?? 0,
+                  monthlyRevenue: stats?.monthlyRevenue ?? 0,
+                  maintenanceRequests: stats?.maintenanceRequests ?? 0,
+                  overduePayments: stats?.overduePayments ?? 0,
+                }}
+              />
 
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <div className="xl:col-span-2">
-                  <RecentActivity />
+                  <RecentActivity
+                    properties={properties}
+                    maintenanceRequests={maintenanceRequests}
+                    payments={payments}
+                  />
                 </div>
                 <div className="space-y-6">
                   <div className="card">
@@ -46,12 +138,7 @@ function App() {
                           Occupancy Rate
                         </span>
                         <span className="font-bold text-primary-600">
-                          {Math.round(
-                            (mockDashboardStats.occupiedUnits /
-                              mockDashboardStats.totalUnits) *
-                              100
-                          )}
-                          %
+                          {occupancyRate}%
                         </span>
                       </div>
                       <div className="flex justify-between items-center p-3 bg-gradient-to-r from-success-50 to-transparent rounded-xl">
@@ -59,7 +146,7 @@ function App() {
                           Avg. Rent
                         </span>
                         <span className="font-bold text-success-600">
-                          KSh 168,500
+                          {Math.round(avgRent)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center p-3 bg-gradient-to-r from-secondary-50 to-transparent rounded-xl">
@@ -67,7 +154,7 @@ function App() {
                           Collection Rate
                         </span>
                         <span className="font-bold text-secondary-600">
-                          98.5%
+                          {Math.round(collectionRate)}
                         </span>
                       </div>
                     </div>

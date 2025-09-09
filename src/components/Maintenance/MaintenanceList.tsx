@@ -20,9 +20,7 @@ interface MaintenanceListProps {
   requests?: MaintenanceRequest[];
 }
 
-export const MaintenanceList: React.FC<MaintenanceListProps> = ({
-  requests,
-}) => {
+export const MaintenanceList: React.FC<MaintenanceListProps> = (_props) => {
   const [modalOpen, setModalOpen] = useState<{
     mode: "create" | "edit";
     initial?: Partial<MaintenanceRequest>;

@@ -35,6 +35,27 @@ export interface Tenant {
   };
 }
 
+export interface Payment {
+  id: string;
+  tenantId: string;
+  propertyId: string;
+  amount: number;
+  type: "rent" | "deposit" | "fee" | "utility";
+  status: "pending" | "completed" | "failed";
+  dueDate: Date;
+  paidDate?: Date;
+  description: string;
+  method?: "cash" | "check" | "card" | "transfer";
+}
+
+export interface DashboardStats {
+  totalProperties: number;
+  totalUnits: number;
+  occupiedProperties: number;
+  monthlyRevenue: number;
+  maintenanceRequests: number;
+  overduePayments: number;
+}
 export interface MaintenanceRequest {
   id: string;
   propertyId: string;
@@ -56,26 +77,4 @@ export interface MaintenanceRequest {
   completedAt?: Date;
   estimatedCost?: number;
   actualCost?: number;
-}
-
-export interface Payment {
-  id: string;
-  tenantId: string;
-  propertyId: string;
-  amount: number;
-  type: "rent" | "deposit" | "fee" | "utility";
-  status: "pending" | "completed" | "failed";
-  dueDate: Date;
-  paidDate?: Date;
-  description: string;
-  method?: "cash" | "check" | "card" | "transfer";
-}
-
-export interface DashboardStats {
-  totalProperties: number;
-  totalUnits: number;
-  occupiedUnits: number;
-  monthlyRevenue: number;
-  maintenanceRequests: number;
-  overduePayments: number;
 }

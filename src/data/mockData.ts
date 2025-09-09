@@ -187,7 +187,7 @@ export const mockPayments: Payment[] = [
 export const mockDashboardStats: DashboardStats = {
   totalProperties: 10,
   totalUnits: 260,
-  occupiedUnits: 260,
+  occupiedProperties: 260,
   monthlyRevenue: 1685000,
   maintenanceRequests: 8,
   overduePayments: 2,

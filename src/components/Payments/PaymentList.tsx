@@ -25,7 +25,7 @@ export const PaymentList: React.FC<PaymentListProps> = ({
   payments: propPayments,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: hookPayments, isLoading } = usePayments();
+  const { data: hookPayments } = usePayments();
 
   const createPayment = useCreatePayment();
   // properties and tenants
