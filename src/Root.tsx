@@ -47,7 +47,10 @@ const router = createBrowserRouter([
           { path: "tenants", element: <TenantList /> },
           { path: "leases", element: <LeaseList /> },
           { path: "maintenance", element: <MaintenanceList /> },
-          { path: "payments", element: <PaymentList /> },
+          {
+            path: "payments",
+            element: <PaymentList payments={[]} />,
+          },
           { path: "reports", element: <ReportsDashboard /> },
           { path: "settings", element: <SettingsPanel /> },
           {

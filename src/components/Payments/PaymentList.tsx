@@ -12,7 +12,7 @@ import {
 import { Payment } from "../../types";
 // import { mockTenants, mockProperties } from "../../data/mockData";
 import { PaymentModal } from "./PaymentModal"; // Import your modal
-import { useCreatePayment } from "../../hooks/usePayments";
+import { useCreatePayment, usePayments } from "../../hooks/usePayments";
 import { useToast } from "../Toast/ToastProvider";
 import { useProperties } from "../../hooks/useProperties";
 import { useTenants } from "../../hooks/useTenants";
@@ -21,8 +21,12 @@ interface PaymentListProps {
   payments?: Payment[];
 }
 
-export const PaymentList: React.FC<PaymentListProps> = ({ payments = [] }) => {
+export const PaymentList: React.FC<PaymentListProps> = ({
+  payments: propPayments,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { data: hookPayments, isLoading } = usePayments();
+
   const createPayment = useCreatePayment();
   // properties and tenants
 
@@ -40,21 +44,25 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments = [] }) => {
     mode: "create" | "edit";
     initial?: any;
   }>(null);
+  const payments = propPayments || hookPayments || [];
 
-  const filteredPayments = payments.filter((payment) => {
-    const tenant = tenantsData?.find((t) => t.id === payment.tenantId);
-    const property = propertiesData?.find((p) => p.id === payment.propertyId);
-    const matchesSearch =
-      tenant?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tenant?.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" || payment.status === filterStatus;
-    const matchesType = filterType === "all" || payment.type === filterType;
+  console.log("payments", payments);
 
-    return matchesSearch && matchesStatus && matchesType;
-  });
+  const filteredPayments =
+    hookPayments?.filter((payment) => {
+      const tenant = tenantsData?.find((t) => t.id === payment.tenantId);
+      const property = propertiesData?.find((p) => p.id === payment.propertyId);
+      const matchesSearch =
+        tenant?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tenant?.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        filterStatus === "all" || payment.status === filterStatus;
+      const matchesType = filterType === "all" || payment.type === filterType;
+
+      return matchesSearch && matchesStatus && matchesType;
+    }) || [];
 
   const getStatusStyle = (status: string) => {
     switch (status) {

@@ -11,14 +11,17 @@ import {
 import { MaintenanceRequest } from "../../types";
 import MaintenanceModal, { MaintenanceFormValues } from "./MaintenanceModal";
 import { mockProperties, mockTenants } from "../../data/mockData";
-import { useCreateMaintenanceRequest } from "../../hooks/useMaintenance";
+import {
+  useCreateMaintenanceRequest,
+  useMaintenanceRequests,
+} from "../../hooks/useMaintenance";
 
 interface MaintenanceListProps {
   requests?: MaintenanceRequest[];
 }
 
 export const MaintenanceList: React.FC<MaintenanceListProps> = ({
-  requests = [],
+  requests,
 }) => {
   const [modalOpen, setModalOpen] = useState<{
     mode: "create" | "edit";
@@ -33,18 +36,19 @@ export const MaintenanceList: React.FC<MaintenanceListProps> = ({
   >("all");
 
   const { mutate: createMaintenanceRequest } = useCreateMaintenanceRequest();
+  const { data: hookRequests } = useMaintenanceRequests();
+  const filteredRequests =
+    hookRequests?.filter((request) => {
+      const matchesSearch =
+        request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        request.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        filterStatus === "all" || request.status === filterStatus;
+      const matchesPriority =
+        filterPriority === "all" || request.priority === filterPriority;
 
-  const filteredRequests = requests.filter((request) => {
-    const matchesSearch =
-      request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      request.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" || request.status === filterStatus;
-    const matchesPriority =
-      filterPriority === "all" || request.priority === filterPriority;
-
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
+      return matchesSearch && matchesStatus && matchesPriority;
+    }) || [];
 
   const getPropertyName = (propertyId: string) => {
     const property = mockProperties.find((p) => p.id === propertyId);
