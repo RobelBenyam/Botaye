@@ -4,16 +4,15 @@ import { Property, Tenant } from "../../types";
 import { readAllDocuments } from "../../utils/db";
 import { PropertyCard } from "../Properties/PropertyCard";
 import { useNavigate } from "react-router-dom";
-import {
-  useDeleteProperty,
-  useUpdateProperty,
-} from "../../hooks/useProperties";
+import { useDeleteProperty } from "../../hooks/useProperties";
 import { useToast } from "../Toast/ToastProvider";
+import { useAuth } from "../../context/AuthContext";
 
 const SEARCH_CATEGORIES = ["properties", "tenants"] as const;
 type Category = (typeof SEARCH_CATEGORIES)[number];
 
 export const SearchPage: React.FC = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -24,14 +23,21 @@ export const SearchPage: React.FC = () => {
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [filteredTenants, setFilteredTenants] = useState<Tenant[]>([]);
-  const updateProperty = useUpdateProperty();
   const deleteProperty = useDeleteProperty();
   const { addToast } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
-      const rawProps = await readAllDocuments("properties");
-      const rawTens = await readAllDocuments("tenants");
+      const RawPropertiesFromDB = await readAllDocuments("properties");
+      const RawTenantsFromDB = await readAllDocuments("tenants");
+
+      const rawProps = RawPropertiesFromDB.filter(
+        (p: any) => p.createdBy === user?.id
+      );
+
+      const rawTens = RawTenantsFromDB.filter((t: any) =>
+        rawProps.some((p: any) => p.id === t.propertyId)
+      );
 
       const props: Property[] = rawProps.map((p: any) => ({
         id: p.id,
@@ -130,7 +136,7 @@ export const SearchPage: React.FC = () => {
                 onView={(prop) => navigate(`/properties/${prop.id}`)}
                 onEdit={(prop) =>
                   setModalOpen({ mode: "edit", property: prop })
-                }   
+                }
                 onDelete={(prop) => {
                   deleteProperty.mutate(prop.id, {
                     onSuccess: () => addToast("Property deleted", "success"),

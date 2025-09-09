@@ -1,6 +1,7 @@
 import { Property } from "../types";
 import { readAllDocuments, updateDocument } from "../utils/db";
 import { User } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export interface PropertiesRepository {
   list(): Promise<Property[]>;
@@ -27,9 +28,9 @@ export const mockPropertiesRepository: PropertiesRepository = {
     if (currentUser?.role === "property_manager") {
       console.log("all ", allProperties);
 
-      const userProperties = (allProperties as Property[]).filter((_p) =>
-        // p.createdBy === currentUser.id ||
-        currentUser.assignedProperties?.includes?.(_p.id)
+      const userProperties = (allProperties as Property[]).filter(
+        (_p) => _p.createdBy === currentUser.id
+        // currentUser.assignedProperties?.includes?.(_p.id)
       );
       propertiesStore = userProperties as Property[];
       return userProperties as Property[];

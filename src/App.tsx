@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { DashboardStats } from "./components/Dashboard/DashboardStats";
 import { RecentActivity } from "./components/Dashboard/RecentActivity";
-import { readAllDocuments } from "./utils/db";
 import { useAuth } from "./context/AuthContext";
 import {
   Property,
@@ -9,6 +8,9 @@ import {
   Payment,
   DashboardStats as StatsType,
 } from "./types";
+import { useProperties } from "./hooks/useProperties";
+import { useMaintenanceRequests } from "./hooks/useMaintenance";
+import { usePayments } from "./hooks/usePayments";
 
 const calculateDashboardStats = (
   properties: Property[],
@@ -16,9 +18,7 @@ const calculateDashboardStats = (
   payments: Payment[]
 ) => {
   const totalProperties = properties.length;
-
   const totalUnits = properties.reduce((sum, p) => sum + p.units, 0);
-
   const occupiedProperties = properties.filter(
     (p) => p.status === "occupied"
   ).length;
@@ -26,7 +26,6 @@ const calculateDashboardStats = (
   const now = new Date();
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(now.getDate() - 30);
-
   const monthlyRevenue = payments
     .filter(
       (p) =>
@@ -37,128 +36,57 @@ const calculateDashboardStats = (
     .reduce((sum, p) => sum + p.amount, 0);
 
   const totalMaintenanceRequests = maintenanceRequests.length;
-
   const overduePayments = payments.filter(
     (p) => p.type === "rent" && p.status === "pending"
   ).length;
 
-  const stats: StatsType = {
+  return {
     totalProperties,
     totalUnits,
     occupiedProperties,
     monthlyRevenue,
     maintenanceRequests: totalMaintenanceRequests,
     overduePayments,
-  };
-
-  return stats;
+  } as StatsType;
 };
 
 function App() {
-  const [stats, setStats] = useState<StatsType | null>(null);
-  const [rawPayments, setRawPayments] = useState<any[]>([]);
-  const [rawProperties, setaRawProperties] = useState<any[]>([]);
-  const [rawMaintenanceRequests, setRawMaintenanceRequests] = useState<any[]>(
-    []
-  );
   const { user } = useAuth();
 
+  const { data: properties = [] } = useProperties();
+  const { data: maintenanceRequestsRaw = [] } = useMaintenanceRequests();
+  const { data: paymentsRaw = [] } = usePayments();
+
+  const propertyIds = properties.map((p) => p.id);
+  const maintenanceRequests = maintenanceRequestsRaw.filter((m) =>
+    propertyIds.includes(m.propertyId)
+  );
+  const payments = paymentsRaw.filter((p) =>
+    propertyIds.includes(p.propertyId)
+  );
+
+  const [stats, setStats] = useState<StatsType | null>(null);
+
   useEffect(() => {
-    const fetchFromDatabase = async () => {
-      try {
-        const propertiesFromDB = await readAllDocuments("properties");
-        setaRawProperties(propertiesFromDB);
+    const computedStats = calculateDashboardStats(
+      properties,
+      maintenanceRequests,
+      payments
+    );
+    setStats(computedStats);
+  }, [properties, maintenanceRequests, payments]);
 
-        const maintenanceFromDb = await readAllDocuments(
-          "maintenance_requests"
-        );
-        setRawMaintenanceRequests(maintenanceFromDb);
-
-        const paymentsFromDb = await readAllDocuments("payments");
-        setRawPayments(paymentsFromDb);
-        console.log(
-          "fetched data from db",
-          "maintenance",
-          maintenanceFromDb,
-          "payments",
-          paymentsFromDb,
-          "properties",
-          propertiesFromDB
-        );
-
-        const properties: Property[] = propertiesFromDB.map((doc: any) => ({
-          id: doc.id,
-          name: doc.name ?? "",
-          address: doc.address ?? "",
-          type: doc.type ?? "",
-          units: doc.units ?? 0,
-          status: doc.status ?? "",
-          rentAmount: doc.rentAmount ?? 0,
-          owner: doc.owner ?? "",
-          tenants: doc.tenants ?? [],
-          payments: doc.payments ?? [],
-          floorPlanUrls: doc.floorPlanUrls ?? [],
-          amenities: doc.amenities ?? [],
-          createdAt: doc.createdAt ?? "",
-          createdBy: doc.createdBy ?? "",
-        }));
-
-        const maintenanceRequests: MaintenanceRequest[] = maintenanceFromDb.map(
-          (doc: any) => ({
-            id: doc.id,
-            propertyId: doc.propertyId ?? "",
-            title: doc.title ?? "",
-            description: doc.description ?? "",
-            priority: doc.priority ?? "",
-            status: doc.status ?? "",
-            createdAt: doc.createdAt ?? "",
-            updatedAt: doc.updatedAt ?? "",
-            assignedTo: doc.assignedTo ?? "",
-            category: doc.category ?? "",
-          })
-        );
-        const payments: Payment[] = paymentsFromDb.map((doc: any) => ({
-          id: doc.id,
-          propertyId: doc.propertyId ?? "",
-          tenantId: doc.tenantId ?? "",
-          amount: doc.amount ?? 0,
-          type: doc.type ?? "rent",
-          status: doc.status ?? "pending",
-          dueDate: doc.dueDate ?? new Date(),
-          paidDate: doc.paidDate ? new Date(doc.paidDate) : undefined,
-          description: doc.description ?? "",
-          method: doc.method ?? "cash",
-        }));
-
-        const computedStats = calculateDashboardStats(
-          properties,
-          maintenanceRequests,
-          payments
-        );
-
-        setStats(computedStats);
-      } catch (error) {
-        console.error("Error fetching properties:", error);
-      }
-    };
-
-    fetchFromDatabase();
-  }, []);
-
-  const rentPayments = rawPayments.filter((p) => p.type === "rent");
+  const rentPayments = payments.filter((p) => p.type === "rent");
   const totalRentDue = rentPayments.reduce((sum, p) => sum + p.amount, 0);
   const totalRentCollected = rentPayments
     .filter((p) => p.status === "completed")
     .reduce((sum, p) => sum + p.amount, 0);
-
   const collectionRate =
     totalRentDue > 0 ? (totalRentCollected / totalRentDue) * 100 : 0;
-
   const avgRent =
     stats && stats.occupiedProperties > 0
       ? stats.monthlyRevenue / stats.occupiedProperties
       : 0;
-
   const occupancyRate = Math.round(
     stats && stats.totalUnits
       ? (stats.occupiedProperties / stats.totalUnits) * 100
@@ -194,9 +122,9 @@ function App() {
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <div className="xl:col-span-2">
                   <RecentActivity
-                    properties={rawProperties}
-                    maintenanceRequests={rawMaintenanceRequests}
-                    payments={rawPayments}
+                    properties={properties}
+                    maintenanceRequests={maintenanceRequests}
+                    payments={payments}
                   />
                 </div>
                 <div className="space-y-6">
