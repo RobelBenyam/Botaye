@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { DashboardStats } from "./components/Dashboard/DashboardStats";
 import { RecentActivity } from "./components/Dashboard/RecentActivity";
-import { mockDashboardStats } from "./data/mockData";
 import { readAllDocuments } from "./utils/db";
-import { set } from "zod";
 import {
   Property,
   MaintenanceRequest,
@@ -71,13 +69,17 @@ function App() {
   const [overduePayments, setOverduePayments] = useState<number>(0);
   const [stats, setStats] = useState<StatsType | null>(null);
   const [rawPayments, setRawPayments] = useState<any[]>([]);
+  const [rawProperties, setaRawProperties] = useState<any[]>([]);
+  const [rawMaintenanceRequests, setRawMaintenanceRequests] = useState<any[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchFromDatabase = async () => {
       try {
-        const rawProperties = await readAllDocuments("properties");
-        const rawMaintenanceRequests = await readAllDocuments(
-          "maintenance_requests"
+        setaRawProperties(await readAllDocuments("properties"));
+        setRawMaintenanceRequests(
+          await readAllDocuments("maintenance_requests")
         );
         setRawPayments(await readAllDocuments("payments"));
 
@@ -209,7 +211,11 @@ function App() {
 
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <div className="xl:col-span-2">
-                  <RecentActivity />
+                  <RecentActivity
+                    properties={rawProperties}
+                    maintenanceRequests={rawMaintenanceRequests}
+                    payments={rawPayments}
+                  />
                 </div>
                 <div className="space-y-6">
                   <div className="card">

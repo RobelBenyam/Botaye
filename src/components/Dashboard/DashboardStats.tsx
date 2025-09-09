@@ -35,9 +35,12 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
     },
     {
       title: "Occupancy Rate",
-      value: `${Math.round(
-        (stats.occupiedProperties / stats.totalUnits) * 100
-      )}%`,
+      value:
+        stats && stats.totalUnits
+          ? `${Math.round(
+              (stats.occupiedProperties / stats.totalUnits) * 100
+            )}%`
+          : "0%",
       subtitle: `${stats.occupiedProperties}/${stats.totalUnits} units`,
       icon: Users,
       gradient: "from-purple-500 to-purple-600",
