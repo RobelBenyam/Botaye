@@ -2,9 +2,14 @@
 // import { Header } from "./components/Layout/Header";
 import { DashboardStats } from "./components/Dashboard/DashboardStats";
 import { RecentActivity } from "./components/Dashboard/RecentActivity";
+import { User } from "./context/AuthContext";
 import { mockDashboardStats } from "./data/mockData";
 
 function App() {
+  const userString = localStorage.getItem("auth.user");
+  const currentUser: User | null = userString
+    ? (JSON.parse(userString) as User)
+    : null;
   return (
     <div className="flex min-h-screen">
       {/* Sidebar remains fixed */}
@@ -17,7 +22,7 @@ function App() {
             <div className="page-enter space-y-8">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl lg:text-5xl font-bold font-display gradient-text mb-3">
-                  Welcome Back, Sarah
+                  Welcome Back, {currentUser?.name.split(" ")[0] || "User"}!
                 </h1>
                 <p className="text-xl text-gray-600 font-medium">
                   Here's what's happening with your Bottaye properties today

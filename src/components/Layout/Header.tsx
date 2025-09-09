@@ -2,13 +2,18 @@ import React from "react";
 import {
   Bell,
   Search,
-  User,
+  UserIcon as UserIcon,
   ChevronDown,
   MessageSquare,
   Sun,
 } from "lucide-react";
+import { User } from "../../context/AuthContext";
 
 export const Header: React.FC = () => {
+  const userString = localStorage.getItem("auth.user");
+  const currentUser: User | null = userString
+    ? (JSON.parse(userString) as User)
+    : null;
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-white/50 fixed top-0 right-0 left-72 z-40 h-36 shadow-soft">
       <div className="flex items-center justify-between px-8 py-4">
@@ -26,7 +31,9 @@ export const Header: React.FC = () => {
           <div className="hidden lg:flex items-center space-x-4">
             <div className="text-sm">
               <span className="text-gray-500">Good morning,</span>
-              <span className="text-gray-900 font-semibold ml-1">Sarah</span>
+              <span className="text-gray-900 font-semibold ml-1">
+                {currentUser?.name.split(" ")[0] || "User"}
+              </span>
             </div>
             <Sun className="w-4 h-4 text-amber-500" />
           </div>
@@ -46,14 +53,16 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-3 bg-white/80 backdrop-blur-sm rounded-2xl p-2 pr-4 border border-gray-200 hover:border-primary-300 hover:shadow-medium transition-all duration-300 cursor-pointer group">
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform duration-300">
-                <User className="w-5 h-5 text-white" />
+                <UserIcon className="w-5 h-5 text-white" />
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-success-500 rounded-full border-2 border-white"></div>
             </div>
             <div className="text-right">
-              <p className="text-sm font-bold text-gray-900">Sarah Johnson</p>
+              <p className="text-sm font-bold text-gray-900">
+                {currentUser?.name}
+              </p>
               <p className="text-xs text-gray-500 font-medium">
-                Bottaye Manager
+                Bottaye {currentUser?.role}
               </p>
             </div>
             <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-primary-500 transition-colors duration-300" />

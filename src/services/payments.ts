@@ -16,7 +16,7 @@ export const mockPaymentsRepository: PaymentsRepository = {
       const currentUser: User | null = userString
         ? (JSON.parse(userString) as User)
         : null;
-      console.log("Current User:", currentUser);
+      console.log("gettings the payments:", currentUser);
       if (currentUser?.role === "property_manager") {
         const userPayments = (fetchedPayments as Payment[]).filter(
           (p) =>

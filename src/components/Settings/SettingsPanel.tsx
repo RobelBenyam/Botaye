@@ -12,19 +12,57 @@ import {
 } from "lucide-react";
 import { readAllDocuments, updateDocument } from "../../utils/db";
 import { User, AuthContext } from "../../context/AuthContext";
+import { Dialog } from "@headlessui/react";
 
 export const SettingsPanel: React.FC = () => {
   const authContext = useContext(AuthContext);
   const user = authContext?.user;
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [properties, setProperties] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const props = await readAllDocuments("properties");
+        setProperties(props.map((p: any) => ({ id: p.id, name: p.name })));
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    };
+    fetchProperties();
+  }, []);
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+  const handleSaveUser = () => {
+    if (selectedUser) {
+      setUsers((prev) =>
+        prev.map((u) => (u.id === selectedUser.id ? selectedUser : u))
+      );
+      updateDocument("users", selectedUser.id, {
+        role: selectedUser.role,
+        assignedProperties: selectedUser.assignedProperties,
+      });
+    }
+    setIsModalOpen(false);
+  };
   const [activeTab, setActiveTab] = useState("profile");
+  const userString = localStorage.getItem("auth.user");
+  const currentUser: User | null = userString
+    ? (JSON.parse(userString) as User)
+    : null;
+
+  const names = currentUser?.name.split(" ");
   const [settings, setSettings] = useState({
     profile: {
-      firstName: "Sarah",
-      lastName: "Johnson",
-      email: "sarah.johnson@bottaye.com",
+      firstName: names?.[0] || "",
+      lastName: names?.slice(1).join(" ") || "",
+      email: currentUser?.email || "",
       phone: "+254 700 123 456",
-      role: "Bottaye Manager",
+      role: currentUser?.role || "Bottaye Manager",
       timezone: "America/New_York",
     },
     notifications: {
@@ -60,7 +98,6 @@ export const SettingsPanel: React.FC = () => {
 
   const handleSave = () => {
     console.log("Settings saved:", settings);
-    // In a real app, this would make an API call
   };
 
   const updateSetting = (category: string, key: string, value: any) => {
@@ -498,6 +535,91 @@ export const SettingsPanel: React.FC = () => {
     </div>
   );
 
+  const renderEditUserModal = () => {
+    if (!selectedUser) return null;
+    return (
+      <Dialog
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        className="fixed z-50 inset-0 overflow-y-auto"
+      >
+        <div className="flex items-center justify-center min-h-screen px-4">
+          <div className="fixed inset-0 bg-black opacity-30" />
+          <div className="bg-white rounded-xl shadow-xl p-6 z-10 w-full max-w-md">
+            <Dialog.Title className="text-lg font-bold mb-4">
+              Edit User
+            </Dialog.Title>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Name</label>
+                <input
+                  type="text"
+                  value={selectedUser.name}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, name: e.target.value })
+                  }
+                  className="input-field w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Role</label>
+                <select
+                  value={selectedUser.role}
+                  onChange={(e) =>
+                    setSelectedUser({
+                      ...selectedUser,
+                      role: e.target.value as "superadmin" | "property_manager",
+                    })
+                  }
+                  className="select-field w-full"
+                >
+                  <option value="Property Manager">Property Manager</option>
+                  <option value="superadmin">Superadmin</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Assigned Properties
+                </label>
+                <select
+                  multiple
+                  value={selectedUser.assignedProperties ?? []}
+                  onChange={(e) => {
+                    const selected = Array.from(e.target.selectedOptions).map(
+                      (opt) => opt.value
+                    );
+                    setSelectedUser({
+                      ...selectedUser,
+                      assignedProperties: selected,
+                    });
+                  }}
+                  className="select-field w-full"
+                  style={{ minHeight: "80px" }}
+                >
+                  {properties.map((prop) => (
+                    <option key={prop.id} value={prop.id}>
+                      {prop.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end space-x-2 mt-6">
+              <button
+                className="btn-secondary"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button className="btn-primary" onClick={handleSaveUser}>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+    );
+  };
   const renderUserManagement = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-bold text-gray-900 mb-4">User Management</h3>
@@ -514,6 +636,9 @@ export const SettingsPanel: React.FC = () => {
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                 Role
               </th>
+              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -529,7 +654,7 @@ export const SettingsPanel: React.FC = () => {
                     onChange={(e) => {
                       const updatedRole = e.target.value as
                         | "superadmin"
-                        | "property_manager"; // Explicitly cast the value
+                        | "property_manager";
                       const updatedUsers = users.map((u) =>
                         u.id === user.id ? { ...u, role: updatedRole } : u
                       );
@@ -537,9 +662,17 @@ export const SettingsPanel: React.FC = () => {
                     }}
                     className="select-field"
                   >
-                    <option value="Property Manager">Property Manager</option>
+                    <option value="property_manager">Property Manager</option>
                     <option value="superadmin">Superadmin</option>
                   </select>
+                </td>
+                <td className="px-4 py-2 text-sm">
+                  <button
+                    className="btn-secondary"
+                    onClick={() => handleEditUser(user)}
+                  >
+                    Edit
+                  </button>
                 </td>
               </tr>
             ))}
@@ -549,9 +682,7 @@ export const SettingsPanel: React.FC = () => {
       <button
         className="btn-primary mt-4"
         onClick={() => {
-          // Here you would send the updated users to your backend or API
           console.log("Updated users:", users);
-          // Optionally show a success message or handle errors
           Promise.all(
             users.map((user) =>
               updateDocument("users", user.id, { role: user.role })
@@ -568,9 +699,9 @@ export const SettingsPanel: React.FC = () => {
       >
         Update user roles
       </button>
+      {renderEditUserModal()}
     </div>
   );
-
   const renderTabContent = () => {
     switch (activeTab) {
       case "profile":
