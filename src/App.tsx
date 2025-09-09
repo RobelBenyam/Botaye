@@ -14,11 +14,6 @@ const calculateDashboardStats = (
   maintenanceRequests: MaintenanceRequest[],
   payments: Payment[]
 ) => {
-  console.log("inside calculateDashboardStats with:");
-  console.log("properties:", properties.length);
-  console.log("maintenanceRequests:", maintenanceRequests.length);
-  console.log("payments:", payments);
-
   const totalProperties = properties.length;
 
   const totalUnits = properties.reduce((sum, p) => sum + p.units, 0);
@@ -55,18 +50,10 @@ const calculateDashboardStats = (
     overduePayments,
   };
 
-  console.log("Computed Dashboard Stats:", stats);
-
   return stats;
 };
 
 function App() {
-  const [totalProperties, setTotalProperties] = useState<number>(0);
-  const [totalUnits, setTotalUnits] = useState<number>(0);
-  const [occupiedProperties, setOccupiedProperties] = useState<number>(0);
-  const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
-  const [maintenanceRequests, setMaintenanceRequests] = useState<number>(0);
-  const [overduePayments, setOverduePayments] = useState<number>(0);
   const [stats, setStats] = useState<StatsType | null>(null);
   const [rawPayments, setRawPayments] = useState<any[]>([]);
   const [rawProperties, setaRawProperties] = useState<any[]>([]);
@@ -82,8 +69,6 @@ function App() {
           await readAllDocuments("maintenance_requests")
         );
         setRawPayments(await readAllDocuments("payments"));
-
-        console.log("Properties fetched:", rawProperties);
 
         const properties: Property[] = rawProperties.map((doc: any) => ({
           id: doc.id,
@@ -134,15 +119,7 @@ function App() {
           payments
         );
 
-        console.log("Computed Dashboard Stats:", computedStats);
-
         setStats(computedStats);
-        setTotalProperties(computedStats.totalProperties);
-        setTotalUnits(computedStats.totalUnits);
-        setOccupiedProperties(computedStats.occupiedProperties);
-        setMonthlyRevenue(computedStats.monthlyRevenue);
-        setMaintenanceRequests(computedStats.maintenanceRequests);
-        setOverduePayments(computedStats.overduePayments);
       } catch (error) {
         console.error("Error fetching properties:", error);
       }
@@ -150,14 +127,6 @@ function App() {
 
     fetchFromDatabase();
   }, []);
-
-  console.log("Total Properties:", totalProperties);
-  console.log("Total Units:", totalUnits);
-  console.log("Occupied Properties:", occupiedProperties);
-  console.log("Monthly Revenue:", monthlyRevenue);
-  console.log("Maintenance Requests:", maintenanceRequests);
-  console.log("Overdue Payments:", overduePayments);
-  console.log("Stats State:", stats);
 
   const rentPayments = rawPayments.filter((p) => p.type === "rent");
   const totalRentDue = rentPayments.reduce((sum, p) => sum + p.amount, 0);

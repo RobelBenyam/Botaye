@@ -6,8 +6,6 @@ import {
   DollarSign,
   Wrench,
   AlertTriangle,
-  TrendingUp,
-  TrendingDown,
 } from "lucide-react";
 import { DashboardStats as StatsType } from "../../types";
 
